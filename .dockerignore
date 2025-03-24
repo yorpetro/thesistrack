@@ -1,0 +1,85 @@
+# Git
+.git
+.gitignore
+.github/
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist
+frontend/coverage
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Documentation
+docs/
+*.md
+LICENSE
+
+# Test directories
+test/
+tests/
+*/test/
+*/tests/
+
+# Data directories that should be mounted as volumes
+postgres-data/ 
