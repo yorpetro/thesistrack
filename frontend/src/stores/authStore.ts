@@ -2,10 +2,10 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import api from '../services/api';
 import axios from 'axios';
-import { User } from '../types';
+import { AuthUser } from '../types';
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;

@@ -79,8 +79,8 @@ const FileViewer = ({ thesisId, attachmentId }: FileViewerProps) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-      <div className="bg-gray-100 px-4 py-3 flex items-center justify-between">
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden max-h-screen">
+      <div className="bg-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center space-x-2">
           {getFileIcon()}
           <h3 className="text-sm font-medium truncate">{preview.filename}</h3>
@@ -95,10 +95,10 @@ const FileViewer = ({ thesisId, attachmentId }: FileViewerProps) => {
         </button>
       </div>
       
-      <div className="p-4">
+      <div className="p-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
         {preview.content_type === 'pdf' && preview.html && (
           <div 
-            className="h-[600px] w-full" 
+            className="w-full" 
             dangerouslySetInnerHTML={{ __html: preview.html }} 
           />
         )}

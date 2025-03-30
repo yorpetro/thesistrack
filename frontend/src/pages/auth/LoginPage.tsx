@@ -23,24 +23,24 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Log in to your account
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-50 to-neutral-light px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full bg-white rounded-custom shadow-custom-lg p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Thesis<span className="text-accent">Track</span>
+          </h1>
+          <h2 className="mt-4 text-2xl font-bold text-secondary">
+            Welcome Back
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/register" className="font-medium text-primary-600 hover:text-primary-500">
-              create a new account
-            </Link>
+          <p className="mt-2 text-sm text-earth">
+            Enter your credentials to access your account
           </p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
             <div>
-              <label htmlFor="email-address" className="sr-only">
+              <label htmlFor="email-address" className="block text-sm font-medium text-secondary mb-1">
                 Email address
               </label>
               <input
@@ -51,12 +51,12 @@ const LoginPage = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                className="appearance-none block w-full px-3 py-2 border border-neutral rounded-custom placeholder-earth-light text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 text-sm"
                 placeholder="Email address"
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="block text-sm font-medium text-secondary mb-1">
                 Password
               </label>
               <input
@@ -67,15 +67,15 @@ const LoginPage = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                className="appearance-none block w-full px-3 py-2 border border-neutral rounded-custom placeholder-earth-light text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 text-sm"
                 placeholder="Password"
               />
             </div>
           </div>
 
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">
+            <div className="rounded-custom bg-red-50 border border-red-200 p-3">
+              <div className="text-sm text-red-600">
                 {error}
               </div>
             </div>
@@ -85,7 +85,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-medium rounded-custom text-white bg-primary hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-200 shadow-custom disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
@@ -100,6 +100,21 @@ const LoginPage = () => {
             </button>
           </div>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-sm text-earth">
+            Don't have an account?{' '}
+            <Link to="/register" className="font-medium text-primary hover:text-primary-600 transition duration-200">
+              Create one now
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-8 text-center">
+        <p className="text-xs text-earth-light">
+          © {new Date().getFullYear()} ThesisTrack. All rights reserved.
+        </p>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 from app.models.user import UserRole
 
@@ -37,12 +37,12 @@ class UserInDBBase(UserBase):
     oauth_provider: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Properties to return to client
 class User(UserInDBBase):
-    pass
+    student_count: Optional[int] = None
 
 
 # Properties stored in DB

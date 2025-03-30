@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getAttachments } from '../../services/attachmentService';
-import { AttachmentBase } from '../../types';
+import { Attachment } from '../../types';
 import { DocumentTextIcon, DocumentIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 
@@ -15,7 +15,7 @@ const AttachmentList = ({
   onSelectAttachment, 
   selectedAttachmentId 
 }: AttachmentListProps) => {
-  const [attachments, setAttachments] = useState<AttachmentBase[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +26,6 @@ const AttachmentList = ({
         const data = await getAttachments(thesisId);
         setAttachments(data);
         
-        // Select first attachment if none selected and we have attachments
         if (!selectedAttachmentId && data.length > 0) {
           onSelectAttachment(data[0].id);
         }
@@ -94,39 +93,45 @@ const AttachmentList = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow">
-      <h3 className="text-lg font-medium p-4 border-b">Attachments</h3>
-      <ul className="divide-y divide-gray-200">
+    <div className="bg-white rounded-lg">
+      <div className="border-b border-gray-200 bg-gray-50 px-4 py-3 flex items-center justify-between">
+        <h3 className="text-sm font-medium text-gray-700">Attachments</h3>
+        <span className="text-xs text-gray-500">{attachments.length} files</span>
+      </div>
+      <div className="divide-y divide-gray-100">
         {attachments.map((attachment) => (
-          <li 
+          <div 
             key={attachment.id}
-            className={`p-4 hover:bg-gray-50 cursor-pointer ${selectedAttachmentId === attachment.id ? 'bg-blue-50' : ''}`}
+            className={`group flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer ${
+              selectedAttachmentId === attachment.id ? 'bg-blue-50' : ''
+            }`}
             onClick={() => onSelectAttachment(attachment.id)}
             tabIndex={0}
             onKeyDown={(e) => e.key === 'Enter' && onSelectAttachment(attachment.id)}
             aria-label={`Select ${attachment.filename}`}
+            role="button"
           >
-            <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0">
-                {getFileIcon(attachment.file_type)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+            <div className="flex-shrink-0 mr-3">
+              {getFileIcon(attachment.file_type)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-gray-900 truncate group-hover:text-blue-600">
                   {attachment.filename}
                 </p>
-                <p className="text-xs text-gray-500">
-                  {formatFileSize(attachment.file_size)} • {formatDate(attachment.updated_at)}
-                </p>
-                {attachment.description && (
-                  <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-                    {attachment.description}
-                  </p>
-                )}
+                <div className="ml-4 flex-shrink-0 flex items-center space-x-4">
+                  <span className="text-xs text-gray-500 whitespace-nowrap">
+                    {formatFileSize(attachment.file_size)}
+                  </span>
+                  <span className="text-xs text-gray-500 whitespace-nowrap">
+                    {formatDate(attachment.updated_at)}
+                  </span>
+                </div>
               </div>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

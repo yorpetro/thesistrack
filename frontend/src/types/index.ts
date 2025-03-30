@@ -8,6 +8,29 @@ export interface User {
   created_at: string;
 }
 
+export interface AuthUser {
+  id: string;
+  email: string;
+  full_name: string;
+  role: 'student' | 'professor' | 'graduation_assistant';
+}
+
+export interface UserSimple {
+  id: string;
+  email: string;
+  full_name: string | null;
+  role: string;
+}
+
+export interface GraduationAssistant extends UserSimple {
+  bio?: string | null;
+  created_at: string;
+  updated_at: string;
+  is_active: boolean;
+  is_verified: boolean;
+  student_count?: number;
+}
+
 // Thesis related types
 export enum ThesisStatus {
   draft = 'draft',
@@ -33,13 +56,6 @@ export interface Thesis {
 export interface ThesisWithRelations extends Thesis {
   student: User;
   supervisor: User | null;
-}
-
-export interface UserSimple {
-  id: string;
-  email: string;
-  full_name: string | null;
-  role: string;
 }
 
 // Attachment related types
@@ -86,6 +102,25 @@ export interface CommentBase {
   thesis_id: string;
   user_id: string;
   parent_id: string | null;
+}
+
+export interface ThesisComment {
+  id: string;
+  content: string;
+  is_resolved: boolean;
+  is_approval: boolean;
+  parent_id: string | null;
+  thesis_id: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+  user: {
+    id: string;
+    email: string;
+    full_name: string | null;
+    role: string;
+  };
+  replies?: ThesisComment[];
 }
 
 // Committee related types

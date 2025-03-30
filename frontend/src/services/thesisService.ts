@@ -28,6 +28,7 @@ export const getThesis = async (id: string): Promise<ThesisWithRelations> => {
 export const createThesis = async (data: {
   title: string;
   abstract?: string;
+  student_id: string;
   supervisor_id?: string;
 }): Promise<Thesis> => {
   try {

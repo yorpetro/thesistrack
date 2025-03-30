@@ -210,6 +210,67 @@
                 }
             }
         },
+        "/api/v1/users/": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Read Users",
+                "description": "Get all users with optional role filtering.",
+                "operationId": "read_users_api_v1_users__get",
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/UserRole"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filter users by role",
+                            "title": "Role"
+                        },
+                        "description": "Filter users by role"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    },
+                                    "title": "Response Read Users Api V1 Users  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/theses/": {
             "get": {
                 "tags": [
@@ -3314,6 +3375,17 @@
                             }
                         ],
                         "title": "Oauth Provider"
+                    },
+                    "student_count": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Student Count"
                     }
                 },
                 "type": "object",

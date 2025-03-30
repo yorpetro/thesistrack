@@ -1,6 +1,8 @@
-import { ReactNode } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { ReactNode, useEffect, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getTheses } from '../services/thesisService';
+import { Thesis } from '../types';
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,17 +11,55 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [studentThesis, setStudentThesis] = useState<Thesis | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStudentThesis = async () => {
+      if (user?.role === 'student') {
+        try {
+          setLoading(true);
+          const theses = await getTheses();
+          console.log('Student theses:', theses); // For debugging
+          if (theses && theses.length > 0) {
+            setStudentThesis(theses[0]);
+          } else {
+            setStudentThesis(null);
+          }
+        } catch (err) {
+          console.error('Failed to fetch student thesis:', err);
+          setStudentThesis(null);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchStudentThesis();
+    }
+  }, [user?.role, isAuthenticated]);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
   
+  // For debugging
+  useEffect(() => {
+    if (user?.role === 'student') {
+      console.log('Student thesis state:', studentThesis);
+    }
+  }, [studentThesis, user?.role]);
+  
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-blue-600 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <Link to="/" className="text-xl font-bold">Thesis Tracker</Link>
+          <Link to="/" className="text-xl font-bold">ThesisTrack</Link>
           <nav className="space-x-4">
             {isAuthenticated ? (
               <>
@@ -27,13 +67,24 @@ const Layout = ({ children }: LayoutProps) => {
                   Welcome, {user?.full_name || 'User'}
                 </span>
                 {user?.role === 'student' && (
-                  <Link to="/dashboard/student" className="hover:underline">Dashboard</Link>
+                  <>
+                    {loading ? (
+                      <span className="text-white opacity-75">Loading...</span>
+                    ) : (
+                      <Link 
+                        to={studentThesis ? `/theses/${studentThesis.id}` : "/theses/new"} 
+                        className="hover:underline"
+                      >
+                        {studentThesis ? 'My Thesis' : 'Create Thesis'}
+                      </Link>
+                    )}
+                  </>
                 )}
-                {user?.role === 'professor' && (
-                  <Link to="/dashboard/professor" className="hover:underline">Dashboard</Link>
-                )}
-                {user?.role === 'graduation_assistant' && (
-                  <Link to="/dashboard/assistant" className="hover:underline">Dashboard</Link>
+                {(user?.role === 'professor' || user?.role === 'graduation_assistant') && (
+                  <>
+                    <Link to="/dashboard" className="hover:underline">Dashboard</Link>
+                    <Link to="/theses" className="hover:underline">Theses</Link>
+                  </>
                 )}
                 <button 
                   onClick={handleLogout}

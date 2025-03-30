@@ -39,24 +39,24 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create a new account
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-50 to-neutral-light px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full bg-white rounded-custom shadow-custom-lg p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Thesis<span className="text-accent">Track</span>
+          </h1>
+          <h2 className="mt-4 text-2xl font-bold text-secondary">
+            Create Account
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
-              sign in to your account
-            </Link>
+          <p className="mt-2 text-sm text-earth">
+            Join ThesisTrack to manage your academic projects
           </p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          <div className="space-y-4">
             <div>
-              <label htmlFor="full-name" className="sr-only">
+              <label htmlFor="full-name" className="block text-sm font-medium text-secondary mb-1">
                 Full name
               </label>
               <input
@@ -66,12 +66,13 @@ const RegisterPage = () => {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Full name"
+                className="form-input"
+                placeholder="Enter your full name"
               />
             </div>
+            
             <div>
-              <label htmlFor="email-address" className="sr-only">
+              <label htmlFor="email-address" className="block text-sm font-medium text-secondary mb-1">
                 Email address
               </label>
               <input
@@ -82,12 +83,13 @@ const RegisterPage = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                className="form-input"
+                placeholder="Enter your email address"
               />
             </div>
+            
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="block text-sm font-medium text-secondary mb-1">
                 Password
               </label>
               <input
@@ -98,12 +100,13 @@ const RegisterPage = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                className="form-input"
+                placeholder="Create a password (min. 8 characters)"
               />
             </div>
+            
             <div>
-              <label htmlFor="confirm-password" className="sr-only">
+              <label htmlFor="confirm-password" className="block text-sm font-medium text-secondary mb-1">
                 Confirm password
               </label>
               <input
@@ -114,13 +117,14 @@ const RegisterPage = () => {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm password"
+                className="form-input"
+                placeholder="Confirm your password"
               />
             </div>
+            
             <div>
-              <label htmlFor="role" className="sr-only">
-                Role
+              <label htmlFor="role" className="block text-sm font-medium text-secondary mb-1">
+                Your role
               </label>
               <select
                 id="role"
@@ -128,7 +132,7 @@ const RegisterPage = () => {
                 required
                 value={role}
                 onChange={(e) => setRole(e.target.value as 'student' | 'professor' | 'graduation_assistant')}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                className="form-input"
               >
                 <option value="student">Student</option>
                 <option value="professor">Professor</option>
@@ -138,8 +142,8 @@ const RegisterPage = () => {
           </div>
 
           {(formError || error) && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">
+            <div className="rounded-custom bg-red-50 border border-red-200 p-3">
+              <div className="text-sm text-red-600">
                 {formError || error}
               </div>
             </div>
@@ -149,11 +153,11 @@ const RegisterPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary w-full py-2.5 shadow-custom disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
-                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                  <span className="inline-block mr-2">
                     <div className="animate-spin h-5 w-5 border-2 border-b-0 border-white rounded-full" />
                   </span>
                   Creating account...
@@ -164,6 +168,21 @@ const RegisterPage = () => {
             </button>
           </div>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-sm text-earth">
+            Already have an account?{' '}
+            <Link to="/login" className="font-medium text-primary hover:text-primary-600 transition duration-200">
+              Sign in here
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-8 text-center">
+        <p className="text-xs text-earth-light">
+          © {new Date().getFullYear()} ThesisTrack. All rights reserved.
+        </p>
       </div>
     </div>
   );
