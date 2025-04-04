@@ -147,4 +147,16 @@ export interface ErrorResponse {
     msg: string;
     type: string;
   }[];
+}
+
+// Request related types
+export interface ThesisRequest {
+  id: string;
+  thesis_id: string;
+  assistant_id: string;
+  status: 'pending' | 'approved' | 'declined' | 'cancelled';
+  created_at: string;
+  updated_at: string;
+  thesis?: Thesis;
+  assistant?: GraduationAssistant;
 } 

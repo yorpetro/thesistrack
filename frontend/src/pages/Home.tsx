@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getTheses, updateThesis } from '../services/thesisService';
+import { getTheses } from '../services/thesisService';
 import { getGraduationAssistants } from '../services/userService';
-import { Thesis, GraduationAssistant } from '../types';
+import { getMyRequests, cancelRequest, approveRequest, declineRequest } from '../services/requestService';
+import { Thesis, GraduationAssistant, ThesisRequest } from '../types';
 import { useAuthStore } from '../stores/authStore';
 import { 
   DocumentTextIcon, 
   AcademicCapIcon, 
   PlusIcon,
-  UserGroupIcon 
+  UserGroupIcon,
+  XMarkIcon,
+  CheckIcon,
+  ClockIcon
 } from '@heroicons/react/24/outline';
+import RequestDisclaimer from '../components/RequestDisclaimer';
 
 const Home = () => {
   const { user } = useAuthStore();
@@ -20,7 +25,14 @@ const Home = () => {
   const [assistants, setAssistants] = useState<GraduationAssistant[]>([]);
   const [loadingAssistants, setLoadingAssistants] = useState(false);
   const [needsAssistant, setNeedsAssistant] = useState(false);
-  const [selectingAssistant, setSelectingAssistant] = useState(false);
+  const [selectedAssistant, setSelectedAssistant] = useState<GraduationAssistant | null>(null);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [requestLoading, setRequestLoading] = useState(false);
+  const [cancellingRequest, setCancellingRequest] = useState(false);
+  const [activeRequest, setActiveRequest] = useState<ThesisRequest | null>(null);
+  const [pendingRequests, setPendingRequests] = useState<ThesisRequest[]>([]);
+  const [loadingRequests, setLoadingRequests] = useState(false);
+  const [processingRequestIds, setProcessingRequestIds] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchTheses = async () => {
@@ -32,14 +44,19 @@ const Home = () => {
           const thesis = data.length > 0 ? data[0] : null;
           setStudentThesis(thesis);
           
-          // Check if the student needs to select a graduation assistant
+          // Check if the student needs an assistant
           if (thesis && !thesis.supervisor_id) {
             setNeedsAssistant(true);
-            fetchAssistants();
+            fetchAssistantsAndRequests(thesis.id);
           }
         } else {
           // Get just the 3 most recent theses for non-students
           setRecentTheses(data.slice(0, 3));
+          
+          // If user is a graduation assistant, fetch incoming requests
+          if (user?.role === 'graduation_assistant') {
+            fetchIncomingRequests();
+          }
         }
       } catch (err) {
         console.error('Failed to fetch theses:', err);
@@ -48,45 +65,121 @@ const Home = () => {
       }
     };
 
-    const fetchAssistants = async () => {
+    const fetchAssistantsAndRequests = async (thesisId: string) => {
       try {
         setLoadingAssistants(true);
-        // Fetch graduation assistants - student count now comes directly from the API
-        const assistantsData = await getGraduationAssistants();
+        // Fetch graduation assistants and active requests in parallel
+        const [assistantsData, requestsData] = await Promise.all([
+          getGraduationAssistants(),
+          getMyRequests()
+        ]);
+        
+        // Find any active request for this thesis
+        const pendingRequest = requestsData.find(
+          req => req.thesis_id === thesisId && req.status === 'pending'
+        );
+        
+        if (pendingRequest) {
+          setActiveRequest(pendingRequest);
+        }
+        
         setAssistants(assistantsData);
       } catch (err) {
-        console.error('Failed to load graduation assistants:', err);
+        console.error('Failed to load assistant data:', err);
       } finally {
         setLoadingAssistants(false);
+      }
+    };
+    
+    const fetchIncomingRequests = async () => {
+      try {
+        setLoadingRequests(true);
+        const requests = await getMyRequests();
+        // Filter for only pending requests
+        const pendingReqs = requests.filter(req => req.status === 'pending');
+        setPendingRequests(pendingReqs);
+      } catch (err) {
+        console.error('Failed to fetch incoming requests:', err);
+      } finally {
+        setLoadingRequests(false);
       }
     };
 
     fetchTheses();
   }, [user?.role]);
 
-  const handleSelectAssistant = async (assistantId: string) => {
-    if (!studentThesis) return;
+  const handleRequestAssistant = (assistant: GraduationAssistant) => {
+    setSelectedAssistant(assistant);
+    setShowDisclaimer(true);
+  };
+  
+  const handleConfirmRequest = async () => {
+    if (!selectedAssistant || !studentThesis) return;
     
     try {
-      setSelectingAssistant(true);
+      setRequestLoading(true);
       
-      // Update the thesis with the selected graduation assistant
-      await updateThesis(studentThesis.id, {
-        supervisor_id: assistantId
-      });
+      // Navigate to the selection page to complete the request
+      // This is a cleaner UX than handling the request here
+      navigate('/select-assistant');
       
-      // Update the local thesis object
-      setStudentThesis({
-        ...studentThesis,
-        supervisor_id: assistantId
-      });
-      
-      // No longer needs an assistant
-      setNeedsAssistant(false);
     } catch (err) {
-      console.error('Failed to assign graduation assistant:', err);
+      console.error('Failed to prepare request:', err);
     } finally {
-      setSelectingAssistant(false);
+      setRequestLoading(false);
+    }
+  };
+  
+  const handleCancelRequest = async () => {
+    if (!activeRequest) return;
+    
+    try {
+      setCancellingRequest(true);
+      
+      // Cancel the active request
+      await cancelRequest(activeRequest.id);
+      
+      // Clear the active request
+      setActiveRequest(null);
+      
+    } catch (err) {
+      console.error('Failed to cancel request:', err);
+    } finally {
+      setCancellingRequest(false);
+    }
+  };
+  
+  const handleApproveRequest = async (requestId: string) => {
+    try {
+      setProcessingRequestIds(prev => [...prev, requestId]);
+      
+      // Approve the request
+      await approveRequest(requestId);
+      
+      // Remove the request from the list
+      setPendingRequests(prev => prev.filter(req => req.id !== requestId));
+      
+    } catch (err) {
+      console.error('Failed to approve request:', err);
+    } finally {
+      setProcessingRequestIds(prev => prev.filter(id => id !== requestId));
+    }
+  };
+  
+  const handleDeclineRequest = async (requestId: string) => {
+    try {
+      setProcessingRequestIds(prev => [...prev, requestId]);
+      
+      // Decline the request
+      await declineRequest(requestId);
+      
+      // Remove the request from the list
+      setPendingRequests(prev => prev.filter(req => req.id !== requestId));
+      
+    } catch (err) {
+      console.error('Failed to decline request:', err);
+    } finally {
+      setProcessingRequestIds(prev => prev.filter(id => id !== requestId));
     }
   };
 
@@ -129,14 +222,40 @@ const Home = () => {
               </Link>
             </div>
 
-            {/* Graduation Assistant Selection Section */}
+            {/* Graduation Assistant Section */}
             {studentThesis && needsAssistant && (
               <div className="bg-blue-50 rounded-lg p-6 shadow-sm">
                 <UserGroupIcon className="h-10 w-10 text-blue-600 mb-4" />
-                <h2 className="text-lg font-medium text-gray-900 mb-2">Select Your Graduation Assistant</h2>
-                <p className="text-gray-600 mb-4">
-                  Choose a graduation assistant who will guide you through your thesis journey.
-                </p>
+                <h2 className="text-lg font-medium text-gray-900 mb-2">
+                  {activeRequest 
+                    ? 'Thesis Assistant Request Pending' 
+                    : 'Request a Thesis Assistant'}
+                </h2>
+                
+                {activeRequest ? (
+                  <div className="mb-4">
+                    <p className="text-gray-600 mb-3">
+                      Your request is pending with <span className="font-medium">
+                        {assistants.find(a => a.id === activeRequest.assistant_id)?.full_name || 'a graduation assistant'}
+                      </span>. They will review your request and respond soon.
+                    </p>
+                    <button
+                      onClick={handleCancelRequest}
+                      disabled={cancellingRequest}
+                      className={`inline-flex items-center text-red-600 hover:text-red-800 font-medium ${
+                        cancellingRequest ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                      aria-label="Cancel assistant request"
+                    >
+                      <XMarkIcon className="h-4 w-4 mr-1" />
+                      {cancellingRequest ? 'Cancelling request...' : 'Cancel request'}
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-gray-600 mb-4">
+                    Choose a graduation assistant who will guide you through your thesis journey.
+                  </p>
+                )}
                 
                 {loadingAssistants ? (
                   <div className="flex justify-center py-4">
@@ -144,7 +263,7 @@ const Home = () => {
                   </div>
                 ) : assistants.length === 0 ? (
                   <p className="text-gray-500 text-center py-2">No graduation assistants available at the moment.</p>
-                ) : (
+                ) : !activeRequest && (
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-4">
                     {assistants.slice(0, 3).map(assistant => (
                       <div 
@@ -161,31 +280,33 @@ const Home = () => {
                           {assistant.student_count || 0} {assistant.student_count === 1 ? 'Student' : 'Students'}
                         </p>
                         <button
-                          onClick={() => handleSelectAssistant(assistant.id)}
-                          disabled={selectingAssistant}
+                          onClick={() => handleRequestAssistant(assistant)}
+                          disabled={requestLoading}
                           className={`w-full text-center text-white bg-blue-600 hover:bg-blue-700 py-1.5 px-2 rounded text-sm ${
-                            selectingAssistant ? 'opacity-50 cursor-not-allowed' : ''
+                            requestLoading ? 'opacity-50 cursor-not-allowed' : ''
                           }`}
-                          aria-label={`Select ${assistant.full_name || 'graduation assistant'} as your mentor`}
+                          aria-label={`Request ${assistant.full_name || 'graduation assistant'} as your mentor`}
                         >
-                          {selectingAssistant ? 'Selecting...' : 'Select'}
+                          {requestLoading ? 'Requesting...' : 'Request Assist'}
                         </button>
                       </div>
                     ))}
                   </div>
                 )}
                 
-                {/* Always show the View All button, regardless of how many assistants are shown */}
-                <div className="mt-6 flex justify-center">
-                  <Link
-                    to="/select-assistant"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    tabIndex={0}
-                    aria-label="View all graduation assistants"
-                  >
-                    View All Graduation Assistants
-                  </Link>
-                </div>
+                {/* Always show the View All button if there are assistants and no active request */}
+                {assistants.length > 0 && !activeRequest && (
+                  <div className="mt-6 flex justify-center">
+                    <Link
+                      to="/select-assistant"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      tabIndex={0}
+                      aria-label="View all graduation assistants"
+                    >
+                      View All Graduation Assistants
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -263,6 +384,90 @@ const Home = () => {
         )}
       </div>
       
+      {/* Thesis Request Section for Graduation Assistants */}
+      {user?.role === 'graduation_assistant' && (
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center mb-6">
+            <ClockIcon className="h-6 w-6 text-blue-600 mr-2" />
+            <h2 className="text-xl font-bold text-gray-900">Pending Thesis Requests</h2>
+          </div>
+          
+          {loadingRequests ? (
+            <div className="flex justify-center items-center h-32">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+            </div>
+          ) : pendingRequests.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No pending thesis requests at the moment.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {pendingRequests.map((request) => {
+                const isProcessing = processingRequestIds.includes(request.id);
+                
+                return (
+                  <div 
+                    key={request.id}
+                    className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50"
+                  >
+                    <div className="p-4">
+                      <div className="mb-2">
+                        <h3 className="font-medium text-gray-900 mb-1">
+                          Request from: {request.thesis?.student_id ? 
+                            <span className="font-semibold">{
+                              request.thesis.student_id
+                            }</span> : 'Unknown Student'}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          Thesis Title: {request.thesis?.title || 'Untitled Thesis'}
+                        </p>
+                      </div>
+                      
+                      <div className="flex flex-wrap items-center justify-between mt-4">
+                        <Link
+                          to={`/theses/${request.thesis_id}`}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                          tabIndex={0}
+                          aria-label={`View thesis: ${request.thesis?.title || 'Untitled'}`}
+                        >
+                          View Thesis Details
+                        </Link>
+                        
+                        <div className="flex space-x-3 mt-2 sm:mt-0">
+                          <button
+                            onClick={() => handleDeclineRequest(request.id)}
+                            disabled={isProcessing}
+                            className={`inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 ${
+                              isProcessing ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                            aria-label="Decline thesis request"
+                          >
+                            <XMarkIcon className="h-4 w-4 mr-1" />
+                            Decline
+                          </button>
+                          
+                          <button
+                            onClick={() => handleApproveRequest(request.id)}
+                            disabled={isProcessing}
+                            className={`inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-green-700 bg-green-50 hover:bg-green-100 ${
+                              isProcessing ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                            aria-label="Approve thesis request"
+                          >
+                            <CheckIcon className="h-4 w-4 mr-1" />
+                            Approve
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+      
       {user?.role !== 'student' && (
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex justify-between items-center mb-6">
@@ -330,6 +535,15 @@ const Home = () => {
           )}
         </div>
       )}
+      
+      {/* Request Disclaimer Modal */}
+      <RequestDisclaimer
+        open={showDisclaimer}
+        onClose={() => setShowDisclaimer(false)}
+        onConfirm={handleConfirmRequest}
+        assistantName={selectedAssistant?.full_name || ''}
+        loading={requestLoading}
+      />
     </div>
   );
 };

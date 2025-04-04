@@ -45,4 +45,5 @@ class Thesis(Base):
     supervisor = relationship("User", back_populates="supervised_theses", foreign_keys=[supervisor_id])
     comments = relationship("ThesisComment", back_populates="thesis", cascade="all, delete-orphan")
     attachments = relationship("ThesisAttachment", back_populates="thesis", cascade="all, delete-orphan")
-    committee_members = relationship("ThesisCommitteeMember", back_populates="thesis", cascade="all, delete-orphan") 
+    committee_members = relationship("ThesisCommitteeMember", back_populates="thesis", cascade="all, delete-orphan")
+    requests = relationship("AssistantRequest", back_populates="thesis", cascade="all, delete-orphan") 

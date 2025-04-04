@@ -34,4 +34,10 @@ class User(Base):
     supervised_theses = relationship("Thesis", back_populates="supervisor",
                                     primaryjoin="and_(User.id==Thesis.supervisor_id, User.role=='professor')")
     comments = relationship("ThesisComment", back_populates="user")
-    events = relationship("Event", back_populates="user") 
+    events = relationship("Event", back_populates="user")
+    
+    # Assistant request relationships
+    sent_requests = relationship("AssistantRequest", foreign_keys="AssistantRequest.student_id",
+                               primaryjoin="User.id==AssistantRequest.student_id")
+    received_requests = relationship("AssistantRequest", foreign_keys="AssistantRequest.assistant_id",
+                                   primaryjoin="User.id==AssistantRequest.assistant_id") 

@@ -156,3 +156,13 @@
 2. Deployment on cloud/VPS.  
 3. Final testing (functional, security, performance).  
 4. Documentation and video demonstration (if required).  
+
+
+
+####
+
+- Professor give defence dates.
+- Calender will visualise dates in the home page.
+- Students see their defence date.
+- Gradution Assistant have due date 2 days before the defence date to write recension.
+- Students have one week due to submit their thesis.

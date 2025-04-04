@@ -3,4 +3,5 @@ from app.schemas.thesis import Thesis, ThesisCreate, ThesisUpdate, ThesisDetail,
 from app.schemas.comment import Comment, CommentCreate, CommentUpdate, CommentDetail, CommentBase
 from app.schemas.attachment import Attachment, AttachmentCreate, AttachmentUpdate, AttachmentDetail, AttachmentBase
 from app.schemas.committee import CommitteeMember, CommitteeMemberCreate, CommitteeMemberUpdate, CommitteeMemberDetail, CommitteeMemberSimple, ThesisSimple
-from app.schemas.event import Event, EventCreate, EventUpdate, EventDetail 
+from app.schemas.event import Event, EventCreate, EventUpdate, EventDetail
+from app.schemas.request import Request, RequestCreate, RequestUpdate, RequestDetail 
