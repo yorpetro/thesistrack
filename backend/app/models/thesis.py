@@ -17,6 +17,8 @@ class ThesisStatus(str, enum.Enum):
 
 
 class Thesis(Base):
+    __tablename__ = "thesis"
+
     id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     title = Column(String, nullable=False, index=True)
     abstract = Column(Text, nullable=True)
@@ -46,4 +48,5 @@ class Thesis(Base):
     comments = relationship("ThesisComment", back_populates="thesis", cascade="all, delete-orphan")
     attachments = relationship("ThesisAttachment", back_populates="thesis", cascade="all, delete-orphan")
     committee_members = relationship("ThesisCommitteeMember", back_populates="thesis", cascade="all, delete-orphan")
-    requests = relationship("AssistantRequest", back_populates="thesis", cascade="all, delete-orphan") 
+    requests = relationship("AssistantRequest", back_populates="thesis", cascade="all, delete-orphan")
+    reviews = relationship("Review", back_populates="thesis", cascade="all, delete-orphan") 

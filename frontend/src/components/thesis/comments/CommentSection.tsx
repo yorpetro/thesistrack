@@ -45,14 +45,14 @@ const CommentSection = ({ thesisId, currentUser }: CommentSectionProps) => {
     }
   };
 
-  const handleCreateComment = async (content: string, isApproval: boolean) => {
+  const handleCreateComment = async (content: string) => {
     if (!currentUser) return;
     
     setSubmitting(true);
+    setError(null);
     try {
       const newComment = await createComment(thesisId, {
         content,
-        is_approval: isApproval,
         thesis_id: thesisId,
         user_id: currentUser.id
       });
@@ -151,14 +151,14 @@ const CommentSection = ({ thesisId, currentUser }: CommentSectionProps) => {
     }
   };
 
-  const handleReplyToComment = async (parentId: string, content: string, isApproval: boolean) => {
+  const handleReplyToComment = async (parentId: string, content: string) => {
     if (!currentUser) return;
     
     setSubmitting(true);
+    setError(null);
     try {
       const newReply = await createComment(thesisId, {
         content,
-        is_approval: isApproval,
         thesis_id: thesisId,
         user_id: currentUser.id,
         parent_id: parentId

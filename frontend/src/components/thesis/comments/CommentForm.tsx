@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface CommentFormProps {
-  onSubmit: (content: string, isApproval: boolean) => Promise<void>;
+  onSubmit: (content: string) => Promise<void>;
   onCancel?: () => void;
   isReply?: boolean;
   submitting?: boolean;
@@ -19,13 +19,11 @@ const CommentForm = ({
   initialContent = ''
 }: CommentFormProps) => {
   const [content, setContent] = useState(initialContent);
-  const [isApproval, setIsApproval] = useState(false);
 
   const handleSubmit = async () => {
     if (!content.trim() || submitting) return;
-    await onSubmit(content, isApproval);
+    await onSubmit(content);
     setContent('');
-    setIsApproval(false);
   };
 
   return (
@@ -49,24 +47,10 @@ const CommentForm = ({
           placeholder={placeholder}
         />
         <div className="flex justify-between items-center">
-          {!isReply && (
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id={`approve-${isReply ? 'reply' : 'comment'}`}
-                checked={isApproval}
-                onChange={(e) => setIsApproval(e.target.checked)}
-                className="mr-2 h-4 w-4 text-primary focus:ring-primary border-neutral rounded"
-              />
-              <label htmlFor={`approve-${isReply ? 'reply' : 'comment'}`} className="text-sm text-earth">
-                Mark as approval
-              </label>
-            </div>
-          )}
           <button
             onClick={handleSubmit}
             disabled={!content.trim() || submitting}
-            className={`btn-primary ${isReply ? 'btn-sm' : ''} disabled:opacity-50 disabled:cursor-not-allowed ${!isReply ? 'ml-auto' : ''}`}
+            className={`btn-primary ${isReply ? 'btn-sm' : ''} disabled:opacity-50 disabled:cursor-not-allowed ml-auto`}
           >
             {submitting ? (
               <span className="flex items-center">

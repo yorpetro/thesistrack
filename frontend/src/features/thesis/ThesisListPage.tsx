@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+// Placeholder for Thesis List Page (for Assistants/Professors)
+import React, { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { getTheses, createThesis } from '../../services/thesisService';
 import { Thesis, ThesisStatus } from '../../types';
@@ -21,7 +22,8 @@ const statusColors: Record<ThesisStatus, string> = {
   declined: 'bg-red-100 text-red-800'
 };
 
-const ThesesList = () => {
+// Rename ThesesList to ThesisListPage
+const ThesisListPage = () => {
   const { user } = useAuthStore();
   const [theses, setTheses] = useState<Thesis[]>([]);
   const [loading, setLoading] = useState(true);
@@ -151,4 +153,5 @@ const ThesesList = () => {
   );
 };
 
-export default ThesesList; 
+// Rename ThesesList to ThesisListPage
+export default ThesisListPage; 

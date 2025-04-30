@@ -17,7 +17,6 @@ export const createComment = async (
   thesisId: string, 
   data: {
     content: string;
-    is_approval: boolean;
     thesis_id: string;
     user_id: string;
     parent_id?: string;

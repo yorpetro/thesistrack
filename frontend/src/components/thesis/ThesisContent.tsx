@@ -5,10 +5,11 @@ import { EyeIcon, PencilIcon } from '@heroicons/react/24/outline';
 
 interface ThesisContentProps {
   thesis: ThesisWithRelations;
-  onSave: (title: string, abstract: string) => Promise<void>;
+  onSave?: (title: string, abstract: string) => Promise<void>;
+  isEditable?: boolean;
 }
 
-const ThesisContent = ({ thesis, onSave }: ThesisContentProps) => {
+const ThesisContent = ({ thesis, onSave, isEditable = true }: ThesisContentProps) => {
   const [title, setTitle] = useState(thesis.title);
   const [abstract, setAbstract] = useState(thesis.abstract || '');
   const [editingTitle, setEditingTitle] = useState(false);
@@ -33,7 +34,7 @@ const ThesisContent = ({ thesis, onSave }: ThesisContentProps) => {
     
     setSaving(true);
     try {
-      await onSave(newTitle, newAbstract);
+      await onSave?.(newTitle, newAbstract);
     } catch (err) {
       console.error('Failed to save changes:', err);
       // Revert changes on error
@@ -103,8 +104,8 @@ const ThesisContent = ({ thesis, onSave }: ThesisContentProps) => {
           />
         ) : (
           <h1 
-            onClick={() => setEditingTitle(true)}
-            className="text-xl font-bold mb-4 text-secondary cursor-pointer hover:bg-neutral-light/50 px-2 py-1 -ml-2 rounded-custom transition-colors"
+            onClick={() => isEditable && setEditingTitle(true)}
+            className={`text-xl font-bold mb-4 text-secondary ${isEditable ? 'cursor-pointer hover:bg-neutral-light/50 px-2 py-1 -ml-2 rounded-custom transition-colors' : ''}`}
           >
             {thesis.title}
           </h1>
@@ -130,6 +131,9 @@ const ThesisContent = ({ thesis, onSave }: ThesisContentProps) => {
                   </>
                 )}
               </button>
+            )}
+            {!isEditable && editingAbstract && (
+              <span className="text-sm text-gray-500">(Read-only)</span>
             )}
           </div>
           {editingAbstract ? (
@@ -165,8 +169,8 @@ const ThesisContent = ({ thesis, onSave }: ThesisContentProps) => {
             </div>
           ) : (
             <div 
-              onClick={() => setEditingAbstract(true)}
-              className="bg-neutral-light rounded-custom p-4 cursor-pointer hover:bg-neutral-light/70 transition-colors"
+              onClick={() => isEditable && setEditingAbstract(true)}
+              className={`bg-neutral-light rounded-custom p-4 ${isEditable ? 'cursor-pointer hover:bg-neutral-light/70 transition-colors' : ''}`}
             >
               <div className="prose max-w-none">
                 {thesis.abstract ? (

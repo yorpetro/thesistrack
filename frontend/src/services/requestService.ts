@@ -1,23 +1,18 @@
 import api from './api';
+// Import the shared ThesisRequest type
+import { ThesisRequest } from '../types';
 
 // Defines the type of request that can be created
-export interface ThesisRequest {
-  id: string;
-  thesis_id: string;
-  assistant_id: string;
-  status: 'pending' | 'approved' | 'declined' | 'cancelled';
-  created_at: string;
-  updated_at: string;
-}
 
 /**
  * Create a new thesis assistance request
+ * @param student_id The ID of the student
  * @param thesis_id The ID of the thesis
  * @param assistant_id The ID of the graduation assistant
  * @returns The created request
  */
-export const createThesisRequest = async (thesis_id: string, assistant_id: string): Promise<ThesisRequest> => {
-  const response = await api.post('/requests', { thesis_id, assistant_id });
+export const createThesisRequest = async (student_id: string, thesis_id: string, assistant_id: string): Promise<ThesisRequest> => {
+  const response = await api.post('/assistant/requests/', { student_id, thesis_id, assistant_id });
   return response.data;
 };
 
@@ -26,7 +21,7 @@ export const createThesisRequest = async (thesis_id: string, assistant_id: strin
  * @returns Array of thesis requests
  */
 export const getMyRequests = async (): Promise<ThesisRequest[]> => {
-  const response = await api.get('/requests/me');
+  const response = await api.get('/assistant/requests/');
   return response.data;
 };
 
@@ -46,7 +41,7 @@ export const getRequest = async (request_id: string): Promise<ThesisRequest> => 
  * @returns The updated request
  */
 export const cancelRequest = async (request_id: string): Promise<ThesisRequest> => {
-  const response = await api.patch(`/requests/${request_id}/cancel`);
+  const response = await api.delete(`/assistant/requests/${request_id}`);
   return response.data;
 };
 
@@ -56,7 +51,7 @@ export const cancelRequest = async (request_id: string): Promise<ThesisRequest> 
  * @returns The updated request
  */
 export const approveRequest = async (request_id: string): Promise<ThesisRequest> => {
-  const response = await api.patch(`/requests/${request_id}/approve`);
+  const response = await api.put(`/assistant/requests/${request_id}`, { status: 'accepted' });
   return response.data;
 };
 
@@ -66,6 +61,6 @@ export const approveRequest = async (request_id: string): Promise<ThesisRequest>
  * @returns The updated request
  */
 export const declineRequest = async (request_id: string): Promise<ThesisRequest> => {
-  const response = await api.patch(`/requests/${request_id}/decline`);
+  const response = await api.put(`/assistant/requests/${request_id}`, { status: 'declined' });
   return response.data;
 }; 

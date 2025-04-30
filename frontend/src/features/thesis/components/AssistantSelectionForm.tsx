@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getGraduationAssistants } from '../services/userService.ts';
-import { getTheses } from '../services/thesisService';
-import { createThesisRequest, getMyRequests, cancelRequest } from '../services/requestService';
-import { GraduationAssistant, Thesis, ThesisRequest } from '../types';
-import { useAuthStore } from '../stores/authStore';
+// Update import paths relative to the new location
+import { getGraduationAssistants } from '../../../services/userService.ts'; 
+import { getTheses } from '../../../services/thesisService'; 
+import { createThesisRequest, getMyRequests, cancelRequest } from '../../../services/requestService';
+import { GraduationAssistant, Thesis, ThesisRequest } from '../../../types';
+import { useAuthStore } from '../../../stores/authStore';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import RequestDisclaimer from '../components/RequestDisclaimer';
+import RequestDisclaimer from '../../../components/RequestDisclaimer'; // Assuming RequestDisclaimer is in components/ root
 
-const GraduationAssistantSelection = () => {
+// Rename component to match file name
+const AssistantSelectionForm = () => {
   const [assistants, setAssistants] = useState<GraduationAssistant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -248,46 +250,25 @@ const GraduationAssistantSelection = () => {
                         {assistant.full_name ? assistant.full_name.charAt(0).toUpperCase() : 'GA'}
                       </div>
                     </div>
-                    
-                    <h2 className="text-xl font-semibold text-center mb-2">
-                      {assistant.full_name || 'Unnamed Assistant'}
-                    </h2>
-                    
-                    <div className="flex justify-center items-center mb-4">
-                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        {assistant.student_count || 0} {assistant.student_count === 1 ? 'Student' : 'Students'}
-                      </span>
-                    </div>
-                    
-                    <p className="text-gray-600 text-sm mb-4 text-center">
-                      {assistant.bio || 'No bio available.'}
-                    </p>
-                    
-                    <div className="flex justify-center">
-                      {isPending ? (
-                        <button
-                          onClick={handleCancelRequest}
-                          disabled={cancellingRequest}
-                          className={`bg-white border border-blue-300 hover:bg-blue-50 text-blue-700 font-medium py-2 px-4 rounded ${
-                            cancellingRequest ? 'opacity-50 cursor-not-allowed' : ''
-                          }`}
-                          aria-label={`Cancel request to ${assistant.full_name || 'this assistant'}`}
-                        >
-                          {cancellingRequest ? 'Cancelling...' : 'Cancel Request'}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleRequestAssistant(assistant)}
-                          disabled={isDisabled || requestLoading}
-                          className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-300 ${
-                            (isDisabled || requestLoading) ? 'opacity-50 cursor-not-allowed' : ''
-                          }`}
-                          aria-label={`Request ${assistant.full_name || 'graduation assistant'} as your mentor`}
-                        >
-                          Request Assist
-                        </button>
-                      )}
-                    </div>
+                    <h3 className="text-lg font-semibold text-center mb-2">{assistant.full_name}</h3>
+                    <p className="text-sm text-gray-500 text-center mb-4">{assistant.email}</p>
+                    <button 
+                      onClick={() => handleRequestAssistant(assistant)} 
+                      disabled={isPending || isDisabled || requestLoading}
+                      className={`w-full px-4 py-2 text-white rounded-md font-semibold transition-colors duration-300 ${
+                        isPending 
+                          ? 'bg-blue-300 cursor-default'
+                          : isDisabled
+                            ? 'bg-gray-300 cursor-not-allowed' 
+                            : requestLoading 
+                              ? 'bg-blue-400 cursor-wait'
+                              : 'bg-blue-600 hover:bg-blue-700'
+                      }`}
+                      aria-disabled={isPending || isDisabled || requestLoading}
+                      aria-label={`Request ${assistant.full_name}`}
+                    >
+                      {isPending ? 'Requested' : requestLoading && selectedAssistant?.id === assistant.id ? 'Requesting...' : 'Request Assistant'}
+                    </button>
                   </div>
                 </div>
               );
@@ -295,17 +276,17 @@ const GraduationAssistantSelection = () => {
           </div>
         )}
       </div>
-      
-      {/* Request Disclaimer Modal */}
-      <RequestDisclaimer
+
+      {/* Disclaimer Modal/Popup */}
+      <RequestDisclaimer 
         open={showDisclaimer}
-        onClose={() => setShowDisclaimer(false)}
+        assistantName={selectedAssistant?.full_name || ''} 
         onConfirm={handleConfirmRequest}
-        assistantName={selectedAssistant?.full_name || ''}
+        onClose={() => setShowDisclaimer(false)}
         loading={requestLoading}
       />
     </div>
   );
 };
 
-export default GraduationAssistantSelection; 
+export default AssistantSelectionForm; 

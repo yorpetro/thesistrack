@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Optional
 from datetime import datetime
 import uuid
 
@@ -23,25 +23,30 @@ async def read_theses(
     current_user: CurrentActiveUser,
     skip: int = 0,
     limit: int = 100,
+    supervisor_id: Optional[str] = None,
 ) -> Any:
     """
-    Retrieve theses based on user role.
+    Retrieve theses based on user role. Can be filtered by supervisor_id (for admins/assistants).
     """
     # Filter theses based on user role
+    query = db.query(Thesis) # Start building the query
+
     if current_user.role == UserRole.STUDENT:
         # Students can only see their own theses
-        theses = db.query(Thesis).filter(
+        theses = query.filter(
             Thesis.student_id == current_user.id
         ).offset(skip).limit(limit).all()
     elif current_user.role == UserRole.PROFESSOR:
         # Professors can see theses they supervise
-        theses = db.query(Thesis).filter(
+        theses = query.filter(
             Thesis.supervisor_id == current_user.id
         ).offset(skip).limit(limit).all()
     else:  # Graduation assistant or admin
-        # Can see all theses
-        theses = db.query(Thesis).offset(skip).limit(limit).all()
-    
+        # Can see all theses, optionally filtered by supervisor_id
+        if supervisor_id is not None:
+            query = query.filter(Thesis.supervisor_id == supervisor_id)
+        theses = query.offset(skip).limit(limit).all()
+
     return theses
 
 @router.post("/", response_model=ThesisSchema)

@@ -154,9 +154,27 @@ export interface ThesisRequest {
   id: string;
   thesis_id: string;
   assistant_id: string;
-  status: 'pending' | 'approved' | 'declined' | 'cancelled';
+  status: 'requested' | 'accepted' | 'declined';
   created_at: string;
   updated_at: string;
   thesis?: Thesis;
   assistant?: GraduationAssistant;
+  student_name?: string | null;
+  assistant_name?: string | null;
+  thesis_title?: string | null;
+} 
+
+// Review related types
+export interface ReviewCreate {
+  text: string;
+  preliminary_evaluation: number; // Should be between 2 and 6
+}
+
+export interface ReviewRead {
+  id: number; // Assuming integer ID based on schema, could be string
+  title: string;
+  text: string;
+  preliminary_evaluation: number;
+  thesis_id: string;
+  assistant_id: string;
 } 

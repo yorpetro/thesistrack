@@ -13,6 +13,8 @@ class UserRole(str, enum.Enum):
 
 
 class User(Base):
+    __tablename__ = "user"
+
     id = Column(String, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String, index=True)
@@ -40,4 +42,8 @@ class User(Base):
     sent_requests = relationship("AssistantRequest", foreign_keys="AssistantRequest.student_id",
                                primaryjoin="User.id==AssistantRequest.student_id")
     received_requests = relationship("AssistantRequest", foreign_keys="AssistantRequest.assistant_id",
-                                   primaryjoin="User.id==AssistantRequest.assistant_id") 
+                                   primaryjoin="User.id==AssistantRequest.assistant_id")
+
+    # Reviews relationship (for assistants)
+    reviews = relationship("Review", back_populates="assistant", 
+                           primaryjoin="and_(User.id==Review.assistant_id, User.role=='graduation_assistant')") 
