@@ -41,18 +41,23 @@ jobs:
     - name: Build and push backend image
       run: |
         echo "Building backend image..."
-        az acr build --registry ${{ env.REGISTRY_NAME }} \
-          --image thesis-backend:${{ github.sha }} \
-          --image thesis-backend:latest \
-          ./backend
+        # Login to ACR
+        az acr login --name ${{ env.REGISTRY_NAME }}
+        
+        # Build and push backend image
+        docker build --platform linux/amd64 -t ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-backend:${{ github.sha }} ./backend
+        docker build --platform linux/amd64 -t ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-backend:latest ./backend
+        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-backend:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-backend:latest
     
     - name: Build and push frontend image  
       run: |
         echo "Building frontend image..."
-        az acr build --registry ${{ env.REGISTRY_NAME }} \
-          --image thesis-frontend:${{ github.sha }} \
-          --image thesis-frontend:latest \
-          ./frontend
+        # Build and push frontend image
+        docker build --platform linux/amd64 -t ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:${{ github.sha }} ./frontend
+        docker build --platform linux/amd64 -t ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:latest ./frontend
+        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:latest
     
     - name: Set up Helm
       uses: azure/setup-helm@v3
