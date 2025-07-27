@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}
+          ports:
+            - containerPort: {{ .Values.backend.port }}
+          env:
+            - name: POSTGRES_SERVER
+              value: {{ .Values.backend.env.POSTGRES_SERVER | quote }}
+            - name: POSTGRES_USER
+              value: {{ .Values.backend.env.POSTGRES_USER | quote }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.backend.env.POSTGRES_PASSWORD | quote }}
+            - name: POSTGRES_DB
+              value: {{ .Values.backend.env.POSTGRES_DB | quote }}
+            - name: ENVIRONMENT
+              value: {{ .Values.backend.env.ENVIRONMENT | quote }}
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"

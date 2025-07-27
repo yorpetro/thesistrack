@@ -1,0 +1,28 @@
+postgres:
+  image: postgres:15
+  storage: 1Gi
+  credentials:
+    user: thesistrack_user
+    password: thesistrack_pass
+    database: thesistrack_db
+  port: 5432
+
+backend:
+  image:
+    repository: thesistrackregistry.azurecr.io/thesis-backend
+    tag: latest
+  port: 8000
+  env:
+    POSTGRES_SERVER: postgres
+    ENVIRONMENT: production
+    POSTGRES_USER: thesistrack_user
+    POSTGRES_PASSWORD: thesistrack_pass
+    POSTGRES_DB: thesistrack_db
+
+frontend:
+  image:
+    repository: thesistrackregistry.azurecr.io/thesis-frontend
+    tag: latest
+  port: 5173
+  env:
+    VITE_API_URL: http://backend:8000

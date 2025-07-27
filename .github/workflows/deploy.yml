@@ -1,0 +1,101 @@
+name: Deploy to AKS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual triggers
+
+env:
+  REGISTRY_NAME: thesistrackregistry
+  CLUSTER_NAME: aks-thesistrack
+  CLUSTER_RESOURCE_GROUP: rg-thesistrack
+  NAMESPACE: default
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Start AKS cluster (if stopped)
+      run: |
+        echo "Checking AKS cluster status..."
+        CLUSTER_STATUS=$(az aks show --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --query "powerState.code" -o tsv)
+        echo "Current cluster status: $CLUSTER_STATUS"
+        
+        if [ "$CLUSTER_STATUS" = "Stopped" ]; then
+          echo "Starting AKS cluster..."
+          az aks start --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }}
+          echo "Waiting for cluster to be ready..."
+          sleep 120  # Wait 2 minutes for cluster to fully start
+        else
+          echo "Cluster is already running"
+        fi
+    
+    - name: Build and push backend image
+      run: |
+        echo "Building backend image..."
+        az acr build --registry ${{ env.REGISTRY_NAME }} \
+          --image thesis-backend:${{ github.sha }} \
+          --image thesis-backend:latest \
+          ./backend
+    
+    - name: Build and push frontend image  
+      run: |
+        echo "Building frontend image..."
+        az acr build --registry ${{ env.REGISTRY_NAME }} \
+          --image thesis-frontend:${{ github.sha }} \
+          --image thesis-frontend:latest \
+          ./frontend
+    
+    - name: Set up Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: '3.12.0'
+    
+    - name: Get AKS credentials
+      run: |
+        az aks get-credentials --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --overwrite-existing
+    
+    - name: Deploy to AKS
+      run: |
+        echo "Deploying to AKS with Helm..."
+        helm upgrade --install thesistrack ./k8s/thesistrack \
+          --set backend.image.tag=${{ github.sha }} \
+          --set frontend.image.tag=${{ github.sha }} \
+          --wait --timeout=600s
+        
+        echo "Deployment completed successfully!"
+    
+    - name: Verify deployment
+      run: |
+        echo "Verifying deployment..."
+        kubectl get pods -o wide
+        kubectl get services
+        
+        # Wait for pods to be ready
+        kubectl wait --for=condition=ready pod -l app=backend --timeout=300s
+        kubectl wait --for=condition=ready pod -l app=frontend --timeout=300s
+        
+        # Get external IP
+        EXTERNAL_IP=$(kubectl get service frontend -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        if [ -n "$EXTERNAL_IP" ]; then
+          echo "✅ Application deployed successfully!"
+          echo "🌐 Frontend URL: http://$EXTERNAL_IP:5173"
+        else
+          echo "⚠️  External IP not yet assigned, check later with: kubectl get service frontend"
+        fi
+    
+    - name: Stop AKS cluster (cost optimization)
+      if: always()  # Run even if previous steps fail
+      run: |
+        echo "Stopping AKS cluster to save costs..."
+        az aks stop --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --no-wait
+        echo "✅ Cluster stop initiated (runs in background)"
+        echo "💡 To access your app, restart cluster with: az aks start --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }}" 

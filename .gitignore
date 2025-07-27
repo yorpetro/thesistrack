@@ -83,3 +83,4 @@ coverage/
 coverage.xml
 *.cover
 *.out 
+.pdfs/*
