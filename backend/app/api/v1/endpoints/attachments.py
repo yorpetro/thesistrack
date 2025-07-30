@@ -48,7 +48,7 @@ async def read_attachments(
             detail="Thesis not found",
         )
     
-    # Check permissions
+    # Check permissions - students can only access their own thesis, professors/assistants can access any
     if (current_user.role == UserRole.STUDENT and 
         current_user.id != thesis.student_id):
         raise HTTPException(
@@ -152,7 +152,7 @@ async def read_attachment(
             detail="Thesis not found",
         )
     
-    # Check permissions
+    # Check permissions - students can only access their own thesis, professors/assistants can access any
     if (current_user.role == UserRole.STUDENT and 
         current_user.id != thesis.student_id):
         raise HTTPException(
@@ -194,7 +194,7 @@ async def download_attachment(
             detail="Thesis not found",
         )
     
-    # Check permissions
+    # Check permissions - students can only access their own thesis, professors/assistants can access any
     if (current_user.role == UserRole.STUDENT and 
         current_user.id != thesis.student_id):
         raise HTTPException(
@@ -256,7 +256,7 @@ async def preview_attachment(
             detail="Thesis not found",
         )
     
-    # Check permissions
+    # Check permissions - students can only access their own thesis, professors/assistants can access any
     if (current_user.role == UserRole.STUDENT and 
         current_user.id != thesis.student_id):
         raise HTTPException(

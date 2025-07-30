@@ -20,6 +20,12 @@ const ThesisContent = ({ thesis, onSave, isEditable = true }: ThesisContentProps
   const titleRef = useRef<HTMLInputElement>(null);
   const abstractRef = useRef<HTMLTextAreaElement>(null);
 
+  // Update local state when thesis prop changes
+  useEffect(() => {
+    setTitle(thesis.title);
+    setAbstract(thesis.abstract || '');
+  }, [thesis.title, thesis.abstract]);
+
   useEffect(() => {
     if (editingTitle && titleRef.current) {
       titleRef.current.focus();
@@ -107,7 +113,7 @@ const ThesisContent = ({ thesis, onSave, isEditable = true }: ThesisContentProps
             onClick={() => isEditable && setEditingTitle(true)}
             className={`text-xl font-bold mb-4 text-secondary ${isEditable ? 'cursor-pointer hover:bg-neutral-light/50 px-2 py-1 -ml-2 rounded-custom transition-colors' : ''}`}
           >
-            {thesis.title}
+            {title}
           </h1>
         )}
 
@@ -173,8 +179,8 @@ const ThesisContent = ({ thesis, onSave, isEditable = true }: ThesisContentProps
               className={`bg-neutral-light rounded-custom p-4 ${isEditable ? 'cursor-pointer hover:bg-neutral-light/70 transition-colors' : ''}`}
             >
               <div className="prose max-w-none">
-                {thesis.abstract ? (
-                  <ReactMarkdown>{thesis.abstract}</ReactMarkdown>
+                {abstract ? (
+                  <ReactMarkdown>{abstract}</ReactMarkdown>
                 ) : (
                   <p className="text-earth italic">No abstract provided</p>
                 )}

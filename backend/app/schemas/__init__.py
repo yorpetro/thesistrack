@@ -5,4 +5,5 @@ from app.schemas.attachment import Attachment, AttachmentCreate, AttachmentUpdat
 from app.schemas.committee import CommitteeMember, CommitteeMemberCreate, CommitteeMemberUpdate, CommitteeMemberDetail, CommitteeMemberSimple, ThesisSimple
 from app.schemas.event import Event, EventCreate, EventUpdate, EventDetail
 from app.schemas.request import Request, RequestCreate, RequestUpdate, RequestDetail
-from app.schemas.review import ReviewBase, ReviewCreate, ReviewUpdate, ReviewRead, ReviewInDB 
+from app.schemas.review import ReviewBase, ReviewCreate, ReviewUpdate, ReviewRead, ReviewInDB
+from app.schemas.deadline import Deadline, DeadlineCreate, DeadlineUpdate, DeadlineDetail 
