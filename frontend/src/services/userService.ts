@@ -31,6 +31,25 @@ export const getGraduationAssistants = async (): Promise<GraduationAssistant[]> 
 };
 
 /**
+ * Fetch graduation assistants and professors (available thesis supervisors)
+ */
+export const getThesisSupervisors = async (): Promise<GraduationAssistant[]> => {
+  try {
+    // Fetch both graduation assistants and professors
+    const [assistantsResponse, professorsResponse] = await Promise.all([
+      api.get('/users/', { params: { role: 'graduation_assistant' } }),
+      api.get('/users/', { params: { role: 'professor' } })
+    ]);
+    
+    // Combine both arrays and return
+    return [...assistantsResponse.data, ...professorsResponse.data];
+  } catch (error) {
+    console.error('Error fetching thesis supervisors:', error);
+    throw error;
+  }
+};
+
+/**
  * Get user by ID
  */
 export const getUserById = async (userId: string): Promise<UserSimple> => {

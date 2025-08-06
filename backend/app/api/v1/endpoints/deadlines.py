@@ -1,5 +1,5 @@
 from typing import Any, List
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.orm import Session
@@ -60,14 +60,20 @@ async def read_deadlines(
     return result
 
 
-@router.post("/", response_model=DeadlineSchema)
+@router.post("/", response_model=List[DeadlineSchema])
 async def create_deadline(
     deadline_in: DeadlineCreate,
     db: DB,
     current_user: CurrentActiveUser,
 ) -> Any:
     """
-    Create a new deadline. Only professors can create deadlines.
+    Create defense deadline and automatically generate submission and review deadlines.
+    Only professors can create deadlines.
+    
+    Business Logic:
+    - Defense deadline: User-specified date
+    - Submission deadline: 1 week before defense
+    - Review deadline: 2 days before defense
     """
     # Check permissions
     if current_user.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
@@ -76,20 +82,86 @@ async def create_deadline(
             detail="Only professors and graduation assistants can create deadlines",
         )
     
-    # Validate deadline is in the future
-    if deadline_in.deadline_date <= datetime.utcnow():
+    # Convert deadline_date to timezone-aware datetime if needed
+    defense_date = deadline_in.deadline_date
+    if defense_date.tzinfo is None:
+        defense_date = defense_date.replace(tzinfo=timezone.utc)
+    
+    # Get current time as timezone-aware
+    now = datetime.now(timezone.utc)
+    
+    # Validate defense deadline is in the future
+    if defense_date <= now:
         raise HTTPException(
             status_code=400,
-            detail="Deadline must be in the future",
+            detail="Defense deadline must be in the future",
         )
     
-    # Create deadline
-    deadline = Deadline(**deadline_in.dict())
-    db.add(deadline)
-    db.commit()
-    db.refresh(deadline)
+    # Calculate related deadlines
+    submission_date = defense_date - timedelta(weeks=1)  # 1 week before defense
+    review_date = defense_date - timedelta(days=2)       # 2 days before defense
     
-    return deadline
+    # Validate that submission deadline is in the future
+    if submission_date <= now:
+        raise HTTPException(
+            status_code=400,
+            detail="Defense deadline is too soon. Submission deadline (1 week before) must be in the future.",
+        )
+    
+    created_deadlines = []
+    
+    try:
+        # Create defense deadline
+        defense_deadline = Deadline(
+            title=deadline_in.title,
+            description=deadline_in.description,
+            deadline_date=defense_date,
+            deadline_type=DeadlineType.DEFENSE,
+            is_active=deadline_in.is_active,
+            is_global=deadline_in.is_global,
+        )
+        db.add(defense_deadline)
+        
+        # Create submission deadline (1 week before defense)
+        submission_deadline = Deadline(
+            title=f"Thesis Submission - {deadline_in.title}",
+            description=f"Student thesis submission deadline (1 week before defense: {deadline_in.title})",
+            deadline_date=submission_date,
+            deadline_type=DeadlineType.SUBMISSION,
+            is_active=deadline_in.is_active,
+            is_global=deadline_in.is_global,
+        )
+        db.add(submission_deadline)
+        
+        # Create review deadline (2 days before defense)  
+        review_deadline = Deadline(
+            title=f"Review Completion - {deadline_in.title}",
+            description=f"Assistant review completion deadline (2 days before defense: {deadline_in.title})",
+            deadline_date=review_date,
+            deadline_type=DeadlineType.REVIEW,
+            is_active=deadline_in.is_active,
+            is_global=deadline_in.is_global,
+        )
+        db.add(review_deadline)
+        
+        # Commit all deadlines
+        db.commit()
+        
+        # Refresh all objects
+        db.refresh(defense_deadline)
+        db.refresh(submission_deadline) 
+        db.refresh(review_deadline)
+        
+        created_deadlines = [defense_deadline, submission_deadline, review_deadline]
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to create deadlines: {str(e)}",
+        )
+    
+    return created_deadlines
 
 
 @router.get("/{deadline_id}", response_model=DeadlineDetail)
@@ -212,27 +284,41 @@ async def get_upcoming_deadlines(
     """
     Get upcoming deadlines within the specified number of days.
     """
-    end_date = datetime.utcnow() + timedelta(days=days_ahead)
+    now = datetime.now(timezone.utc)
+    end_date = now + timedelta(days=days_ahead)
     
     query = db.query(Deadline).filter(
-        Deadline.deadline_date >= datetime.utcnow(),
+        Deadline.deadline_date >= now,
         Deadline.deadline_date <= end_date,
         Deadline.is_active == True
     )
     
-    # Students can only see global deadlines
+    # Role-based filtering
     if current_user.role == UserRole.STUDENT:
+        # Students see submission and defense deadlines (global only)
+        query = query.filter(
+            Deadline.is_global == True,
+            Deadline.deadline_type.in_(['submission', 'defense'])
+        )
+    elif current_user.role in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+        # Professors and assistants see all active global deadlines
         query = query.filter(Deadline.is_global == True)
     
     deadlines = query.order_by(Deadline.deadline_date.asc()).all()
     
     # Add computed fields
-    now = datetime.utcnow()
     result = []
     for deadline in deadlines:
         deadline_detail = DeadlineDetail.from_orm(deadline)
         deadline_detail.is_upcoming = True
-        delta = deadline.deadline_date - now
+        
+        # Handle timezone-aware datetime for days_remaining calculation
+        if deadline.deadline_date.tzinfo is None:
+            deadline_date = deadline.deadline_date.replace(tzinfo=timezone.utc)
+        else:
+            deadline_date = deadline.deadline_date
+            
+        delta = deadline_date - now
         deadline_detail.days_remaining = delta.days
         result.append(deadline_detail)
     

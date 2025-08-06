@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import Any
 
 from app import models, schemas
-from app.core.deps import get_db, get_current_graduation_assistant
+from app.core.deps import get_db, get_current_reviewer
 from app.models import User, Thesis, Review
 
 router = APIRouter()
@@ -15,12 +15,12 @@ def create_thesis_review(
     db: Session = Depends(get_db),
     thesis_id: str,
     review_in: schemas.ReviewCreate,
-    current_user: User = Depends(get_current_graduation_assistant)
+    current_user: User = Depends(get_current_reviewer)
 ) -> Any:
     """
     Create a new review for a specific thesis.
 
-    Only accessible by graduation assistants.
+    Accessible by professors and graduation assistants.
     The review title is auto-generated.
     """
     # Check if thesis exists
@@ -31,10 +31,10 @@ def create_thesis_review(
             detail="Thesis not found",
         )
     
-    # Role check is handled by the get_current_graduation_assistant dependency
+    # Role check is handled by the get_current_reviewer dependency
 
     # Optional: Add more specific authorization checks if needed, 
-    # e.g., is the assistant assigned to this thesis or student?
+    # e.g., is the reviewer (professor/assistant) assigned to this thesis or student?
 
     # Generate the title
     review_title = f"{current_user.full_name} review"

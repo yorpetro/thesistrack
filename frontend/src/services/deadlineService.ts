@@ -47,13 +47,13 @@ export const deadlineService = {
     }
   },
 
-  // Create a new deadline
-  createDeadline: async (data: DeadlineCreate): Promise<Deadline> => {
+  // Create a new deadline (creates defense + automatic submission/review deadlines)
+  createDeadline: async (data: DeadlineCreate): Promise<Deadline[]> => {
     try {
       const response = await api.post('/deadlines/', data);
       return response.data;
     } catch (error) {
-      console.error('Error creating deadline:', error);
+      console.error('Error creating deadlines:', error);
       throw error;
     }
   },

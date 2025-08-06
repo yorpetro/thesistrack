@@ -195,7 +195,7 @@ const ThesisPage = () => {
                 {thesis.supervisor.full_name || 'N/A'}
               </span>
             </div>
-            {user?.role === 'graduation_assistant' && (
+            {(user?.role === 'graduation_assistant' || user?.role === 'professor') && (
               <button
                 onClick={handleOpenReviewModal}
                 className="btn-secondary"

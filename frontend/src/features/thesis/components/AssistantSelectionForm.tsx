@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 // Update import paths relative to the new location
-import { getGraduationAssistants } from '../../../services/userService.ts'; 
+import { getThesisSupervisors } from '../../../services/userService.ts'; 
 import { getTheses } from '../../../services/thesisService'; 
 import { createThesisRequest, getMyRequests, cancelRequest } from '../../../services/requestService';
 import { GraduationAssistant, Thesis, ThesisRequest } from '../../../types';
@@ -34,9 +34,9 @@ const AssistantSelectionForm = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch graduation assistants, theses, and pending requests in parallel
+        // Fetch thesis supervisors (assistants + professors), theses, and pending requests in parallel
         const [assistantsData, thesesData, requestsData] = await Promise.all([
-          getGraduationAssistants(),
+          getThesisSupervisors(),
           getTheses(),
           getMyRequests()
         ]);

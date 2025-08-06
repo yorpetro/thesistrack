@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getTheses } from '../../services/thesisService';
-import { getGraduationAssistants } from '../../services/userService';
+import { getThesisSupervisors } from '../../services/userService';
 import { getMyRequests, cancelRequest } from '../../services/requestService';
 import { Thesis, GraduationAssistant, ThesisRequest } from '../../types';
 import { useAuthStore } from '../../stores/authStore';
@@ -53,7 +53,7 @@ const StudentHome: React.FC = () => {
       try {
         setLoadingAssistants(true);
         const [assistantsData, requestsData] = await Promise.all([
-          getGraduationAssistants(),
+          getThesisSupervisors(),
           getMyRequests() // Fetches requests initiated by the student
         ]);
 

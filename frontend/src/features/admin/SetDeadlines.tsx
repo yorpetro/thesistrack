@@ -8,12 +8,12 @@ const SetDeadlines: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   
-  // Form state
+  // Form state - only for defense deadline (others auto-calculated)
   const [formData, setFormData] = useState<DeadlineCreate>({
     title: '',
     description: '',
     deadline_date: '',
-    deadline_type: 'submission' as DeadlineType,
+    deadline_type: 'defense' as DeadlineType,
     is_active: true,
     is_global: true,
   });
@@ -45,24 +45,25 @@ const SetDeadlines: React.FC = () => {
       setIsCreating(true);
       setError(null);
       
-      const newDeadline = await deadlineService.createDeadline({
+      const createdDeadlines = await deadlineService.createDeadline({
         ...formData,
         deadline_date: new Date(formData.deadline_date).toISOString(),
       });
       
-      setDeadlines([...deadlines, newDeadline]);
+      // Add all created deadlines (defense, submission, review) to the list
+      setDeadlines([...deadlines, ...createdDeadlines]);
       
       // Reset form
       setFormData({
         title: '',
         description: '',
         deadline_date: '',
-        deadline_type: 'submission' as DeadlineType,
+        deadline_type: 'defense' as DeadlineType,
         is_active: true,
         is_global: true,
       });
     } catch (err) {
-      setError('Failed to create deadline');
+      setError('Failed to create deadlines');
     } finally {
       setIsCreating(false);
     }
@@ -113,48 +114,44 @@ const SetDeadlines: React.FC = () => {
         </div>
       )}
 
-      {/* Create New Deadline Form */}
+      {/* Create New Defense Deadline Form */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Create New Deadline</h2>
+        <h2 className="text-xl font-semibold mb-4">Set Defense Deadline</h2>
+        <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
+          <div className="flex">
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-blue-800">Automatic Deadline Creation</h3>
+              <div className="mt-2 text-sm text-blue-700">
+                <p>When you set a defense deadline, the system will automatically create:</p>
+                <ul className="mt-1 list-disc list-inside">
+                  <li><strong>Submission deadline:</strong> 1 week before defense</li>
+                  <li><strong>Review deadline:</strong> 2 days before defense</li>
+                  <li><strong>Defense deadline:</strong> Your specified date</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                Title *
-              </label>
-              <input
-                type="text"
-                id="title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., Thesis Submission Deadline"
-                required
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="deadline_type" className="block text-sm font-medium text-gray-700 mb-1">
-                Type
-              </label>
-              <select
-                id="deadline_type"
-                value={formData.deadline_type}
-                onChange={(e) => setFormData({ ...formData, deadline_type: e.target.value as DeadlineType })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="submission">Submission</option>
-                <option value="review">Review</option>
-                <option value="defense">Defense</option>
-                <option value="revision">Revision</option>
-              </select>
-            </div>
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+              Defense Title *
+            </label>
+            <input
+              type="text"
+              id="title"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g., Spring 2025 Thesis Defense"
+              required
+            />
           </div>
 
           <div>
             <label htmlFor="deadline_date" className="block text-sm font-medium text-gray-700 mb-1">
-              Deadline Date & Time *
+              Defense Date & Time *
             </label>
             <input
               type="datetime-local"
@@ -164,6 +161,9 @@ const SetDeadlines: React.FC = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+            <p className="mt-1 text-sm text-gray-500">
+              Must be at least 1 week in the future (to allow for submission deadline)
+            </p>
           </div>
 
           <div>
@@ -207,7 +207,7 @@ const SetDeadlines: React.FC = () => {
             disabled={isCreating}
             className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
-            {isCreating ? 'Creating...' : 'Create Deadline'}
+            {isCreating ? 'Creating Deadlines...' : 'Create Defense & Related Deadlines'}
           </button>
         </form>
       </div>

@@ -46,16 +46,16 @@ async def create_request(
             detail="Can only request assistance for theses in DRAFT status",
         )
     
-    # Check if the assistant exists and is a grad assistant
+    # Check if the assistant exists and is a grad assistant or professor
     assistant = db.query(models.User).filter(
         models.User.id == request_in.assistant_id,
-        models.User.role == models.UserRole.GRAD_ASSISTANT
+        models.User.role.in_([models.UserRole.GRAD_ASSISTANT, models.UserRole.PROFESSOR])
     ).first()
     
     if not assistant:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Assistant not found or is not a graduation assistant",
+            detail="Assistant not found or is not a graduation assistant or professor",
         )
     
     # Check if a request to this assistant for this thesis was previously declined
@@ -108,11 +108,11 @@ async def update_request(
     """
     Update a request status (accept or decline)
     """
-    # Verify the user is a graduation assistant
-    if current_user.role != models.UserRole.GRAD_ASSISTANT:
+    # Verify the user is a graduation assistant or professor
+    if current_user.role not in [models.UserRole.GRAD_ASSISTANT, models.UserRole.PROFESSOR]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only graduation assistants can update request status",
+            detail="Only graduation assistants and professors can update request status",
         )
     
     # Get the request
@@ -163,12 +163,12 @@ async def list_requests(
     # Filter based on user role
     if current_user.role == models.UserRole.STUDENT:
         query = query.filter(models.AssistantRequest.student_id == current_user.id)
-    elif current_user.role == models.UserRole.GRAD_ASSISTANT:
+    elif current_user.role in [models.UserRole.GRAD_ASSISTANT, models.UserRole.PROFESSOR]:
         query = query.filter(models.AssistantRequest.assistant_id == current_user.id)
     else:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only students and graduation assistants can view requests",
+            detail="Only students, graduation assistants, and professors can view requests",
         )
     
     # Apply status filter if provided
