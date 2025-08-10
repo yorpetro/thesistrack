@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
+import ThemeToggle from '../../components/common/ThemeToggle';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -23,16 +24,21 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-50 to-neutral-light px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white rounded-custom shadow-custom-lg p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-50 to-neutral-light dark:from-gray-900 dark:to-gray-800 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+      {/* Theme toggle in top right corner */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      
+      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-custom shadow-custom-lg p-8 border dark:border-gray-700">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Thesis<span className="text-accent">Track</span>
           </h1>
-          <h2 className="mt-4 text-2xl font-bold text-secondary">
+          <h2 className="mt-4 text-2xl font-bold text-secondary dark:text-gray-200">
             Welcome Back
           </h2>
-          <p className="mt-2 text-sm text-earth">
+          <p className="mt-2 text-sm text-earth dark:text-gray-400">
             Enter your credentials to access your account
           </p>
         </div>
@@ -40,7 +46,7 @@ const LoginPage = () => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="email-address" className="block text-sm font-medium text-secondary mb-1">
+              <label htmlFor="email-address" className="block text-sm font-medium text-secondary dark:text-gray-200 mb-1">
                 Email address
               </label>
               <input
@@ -51,12 +57,12 @@ const LoginPage = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none block w-full px-3 py-2 border border-neutral rounded-custom placeholder-earth-light text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 text-sm"
+                className="appearance-none block w-full px-3 py-2 border border-neutral dark:border-gray-600 rounded-custom placeholder-earth-light dark:placeholder-gray-400 text-secondary dark:text-gray-200 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 text-sm"
                 placeholder="Email address"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-secondary mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-secondary dark:text-gray-200 mb-1">
                 Password
               </label>
               <input
@@ -67,15 +73,15 @@ const LoginPage = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none block w-full px-3 py-2 border border-neutral rounded-custom placeholder-earth-light text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 text-sm"
+                className="appearance-none block w-full px-3 py-2 border border-neutral dark:border-gray-600 rounded-custom placeholder-earth-light dark:placeholder-gray-400 text-secondary dark:text-gray-200 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 text-sm"
                 placeholder="Password"
               />
             </div>
           </div>
 
           {error && (
-            <div className="rounded-custom bg-red-50 border border-red-200 p-3">
-              <div className="text-sm text-red-600">
+            <div className="rounded-custom bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3">
+              <div className="text-sm text-red-600 dark:text-red-400">
                 {error}
               </div>
             </div>
@@ -102,7 +108,7 @@ const LoginPage = () => {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-earth">
+          <p className="text-sm text-earth dark:text-gray-400">
             Don't have an account?{' '}
             <Link to="/register" className="font-medium text-primary hover:text-primary-600 transition duration-200">
               Create one now
@@ -112,7 +118,7 @@ const LoginPage = () => {
       </div>
 
       <div className="mt-8 text-center">
-        <p className="text-xs text-earth-light">
+        <p className="text-xs text-earth-light dark:text-gray-500">
           © {new Date().getFullYear()} ThesisTrack. All rights reserved.
         </p>
       </div>

@@ -111,7 +111,7 @@ const ThesisContent = ({ thesis, onSave, isEditable = true }: ThesisContentProps
         ) : (
           <h1 
             onClick={() => isEditable && setEditingTitle(true)}
-            className={`text-xl font-bold mb-4 text-secondary ${isEditable ? 'cursor-pointer hover:bg-neutral-light/50 px-2 py-1 -ml-2 rounded-custom transition-colors' : ''}`}
+            className={`text-xl font-bold mb-4 text-secondary dark:text-gray-100 ${isEditable ? 'cursor-pointer hover:bg-neutral-light/50 dark:hover:bg-gray-700/50 px-2 py-1 -ml-2 rounded-custom transition-colors' : ''}`}
           >
             {title}
           </h1>
@@ -119,7 +119,7 @@ const ThesisContent = ({ thesis, onSave, isEditable = true }: ThesisContentProps
 
         <div className="mt-6">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold text-secondary">Abstract</h3>
+            <h3 className="text-lg font-semibold text-secondary dark:text-gray-100">Abstract</h3>
             {editingAbstract && (
               <button
                 onClick={() => setShowPreview(!showPreview)}
@@ -145,8 +145,8 @@ const ThesisContent = ({ thesis, onSave, isEditable = true }: ThesisContentProps
           {editingAbstract ? (
             <div className="space-y-4">
               {showPreview ? (
-                <div className="bg-neutral-light rounded-custom p-4">
-                  <div className="prose max-w-none">
+                <div className="bg-neutral-light dark:bg-gray-700 rounded-custom p-4">
+                  <div className="prose dark:prose-invert max-w-none text-secondary dark:text-gray-100">
                     <ReactMarkdown>{abstract || '*No abstract provided*'}</ReactMarkdown>
                   </div>
                 </div>
@@ -161,7 +161,7 @@ const ThesisContent = ({ thesis, onSave, isEditable = true }: ThesisContentProps
                   placeholder="Abstract (optional) - Markdown supported"
                 />
               )}
-              <div className="text-xs text-earth">
+              <div className="text-xs text-earth dark:text-gray-400">
                 <p>Supports Markdown formatting:</p>
                 <ul className="list-disc list-inside">
                   <li># Header 1, ## Header 2, etc.</li>
@@ -176,13 +176,13 @@ const ThesisContent = ({ thesis, onSave, isEditable = true }: ThesisContentProps
           ) : (
             <div 
               onClick={() => isEditable && setEditingAbstract(true)}
-              className={`bg-neutral-light rounded-custom p-4 ${isEditable ? 'cursor-pointer hover:bg-neutral-light/70 transition-colors' : ''}`}
+              className={`bg-neutral-light dark:bg-gray-700 rounded-custom p-4 ${isEditable ? 'cursor-pointer hover:bg-neutral-light/70 dark:hover:bg-gray-600 transition-colors' : ''}`}
             >
-              <div className="prose max-w-none">
+              <div className="prose dark:prose-invert max-w-none text-secondary dark:text-gray-100">
                 {abstract ? (
                   <ReactMarkdown>{abstract}</ReactMarkdown>
                 ) : (
-                  <p className="text-earth italic">No abstract provided</p>
+                  <p className="text-earth dark:text-gray-400 italic">No abstract provided</p>
                 )}
               </div>
             </div>

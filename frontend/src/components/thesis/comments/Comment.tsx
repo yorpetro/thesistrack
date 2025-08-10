@@ -59,9 +59,9 @@ const Comment = ({
   const hasReplies = isParentComment && replies.length > 0;
 
   return (
-    <div className={`${isParentComment ? 'rounded-lg border border-neutral' : 'border-l border-neutral ml-8 mt-2'}`}>
+    <div className={`${isParentComment ? 'rounded-lg border border-neutral dark:border-gray-600' : 'border-l border-neutral dark:border-gray-600 ml-8 mt-2'}`}>
       {/* Comment Header */}
-      <div className="flex items-center justify-between p-4 bg-neutral/5">
+      <div className="flex items-center justify-between p-4 bg-neutral/5 dark:bg-gray-700/20">
         <div className="flex items-center">
           <div className="mr-2">
             <ProfilePicture 
@@ -70,10 +70,10 @@ const Comment = ({
               size="sm"
             />
           </div>
-          <span className="text-sm font-medium text-secondary">
+          <span className="text-sm font-medium text-secondary dark:text-gray-200">
             {comment.user?.full_name || comment.user?.email || 'Unknown user'}
           </span>
-          <span className="text-xs text-earth ml-2">
+          <span className="text-xs text-earth dark:text-gray-400 ml-2">
             {format(new Date(comment.created_at), 'MMM d, yyyy h:mm a')}
           </span>
         </div>
@@ -116,7 +116,7 @@ const Comment = ({
             </div>
           </div>
         ) : (
-          <p className="text-secondary whitespace-pre-wrap">{comment.content}</p>
+          <p className="text-secondary dark:text-gray-100 whitespace-pre-wrap">{comment.content}</p>
         )}
       </div>
 
@@ -175,8 +175,8 @@ const Comment = ({
 
       {/* Delete Confirmation */}
       {isDeleting && (
-        <div className="p-4 border-t border-neutral">
-          <p className="text-sm text-earth mb-3">Are you sure you want to delete this comment?</p>
+        <div className="p-4 border-t border-neutral dark:border-gray-600">
+          <p className="text-sm text-earth dark:text-gray-300 mb-3">Are you sure you want to delete this comment?</p>
           <div className="flex justify-end space-x-2">
             <button
               onClick={() => setIsDeleting(false)}
@@ -196,7 +196,7 @@ const Comment = ({
 
       {/* Reply Form */}
       {isReplying && (
-        <div className="p-4 border-t border-neutral">
+        <div className="p-4 border-t border-neutral dark:border-gray-600">
           <CommentForm
             onSubmit={handleReply}
             onCancel={() => setIsReplying(false)}
@@ -209,7 +209,7 @@ const Comment = ({
 
       {/* Replies */}
       {hasReplies && showReplies && (
-        <div className="border-t border-neutral">
+        <div className="border-t border-neutral dark:border-gray-600">
           {replies.map(reply => (
             <Comment
               key={reply.id}

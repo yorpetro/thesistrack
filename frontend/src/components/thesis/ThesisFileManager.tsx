@@ -32,7 +32,7 @@ const ThesisFileManager = ({ thesisId, currentUser, thesis }: ThesisFileManagerP
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-secondary">Documents</h2>
+        <h2 className="text-xl font-bold text-secondary dark:text-gray-100">Documents</h2>
         {canUpload && (
           <button
             onClick={handleUpload}
@@ -44,7 +44,7 @@ const ThesisFileManager = ({ thesisId, currentUser, thesis }: ThesisFileManagerP
         )}
       </div>
       <div className="grid grid-cols-1 gap-6">
-        <div className="bg-white rounded-lg shadow-sm">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700">
           <AttachmentList 
             key={refreshTrigger}
             thesisId={thesisId}
@@ -54,7 +54,7 @@ const ThesisFileManager = ({ thesisId, currentUser, thesis }: ThesisFileManagerP
         </div>
 
         {selectedAttachmentId && (
-          <div className="bg-white rounded-lg shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700">
             <FileViewer 
               thesisId={thesisId}
               attachmentId={selectedAttachmentId}

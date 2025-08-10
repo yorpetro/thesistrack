@@ -123,11 +123,11 @@ const StudentHome: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Section (Optional but good for consistency) */}
-      <div className="bg-white rounded-lg shadow p-8 mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 mb-8 border dark:border-gray-700">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
           Welcome{user?.full_name ? `, ${user.full_name}` : ''}!
         </h1>
-        <p className="text-lg text-gray-600">
+        <p className="text-lg text-gray-600 dark:text-gray-300">
           Manage and track your thesis journey from submission to completion.
         </p>
       </div>
@@ -136,17 +136,17 @@ const StudentHome: React.FC = () => {
         {/* Left Column: Thesis and Assistant */}
         <div className="md:col-span-2 space-y-8">
           {/* Your Thesis Card */}
-          <div className="bg-primary-50 rounded-lg p-6 shadow-sm">
-            <DocumentTextIcon className="h-10 w-10 text-primary-600 mb-4" />
-            <h2 className="text-lg font-medium text-gray-900 mb-2">Your Thesis</h2>
-            <p className="text-gray-600 mb-4">
+          <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-6 shadow-sm border dark:border-primary-800">
+            <DocumentTextIcon className="h-10 w-10 text-primary-600 dark:text-primary-400 mb-4" />
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Your Thesis</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
               {!studentThesis 
                 ? 'Start your thesis journey by creating your thesis.'
                 : 'View and manage your thesis submission.'}
             </p>
             <Link
               to={studentThesis ? `/theses/${studentThesis.id}` : "/theses/new"}
-              className="text-primary-600 hover:text-primary-700 font-medium flex items-center"
+              className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center"
               tabIndex={0}
               aria-label={!studentThesis ? 'Create new thesis' : 'View your thesis'}
             >
@@ -163,9 +163,9 @@ const StudentHome: React.FC = () => {
 
           {/* Graduation Assistant Section */}
           {studentThesis && needsAssistant && (
-            <div className="bg-blue-50 rounded-lg p-6 shadow-sm">
-              <UserGroupIcon className="h-10 w-10 text-blue-600 mb-4" />
-              <h2 className="text-lg font-medium text-gray-900 mb-2">
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 shadow-sm border dark:border-blue-800">
+              <UserGroupIcon className="h-10 w-10 text-blue-600 dark:text-blue-400 mb-4" />
+              <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
                 {activeRequest 
                   ? 'Thesis Assistant Request Pending' 
                   : 'Request a Thesis Assistant'}
@@ -173,7 +173,7 @@ const StudentHome: React.FC = () => {
               
               {activeRequest ? (
                 <div className="mb-4">
-                  <p className="text-gray-600 mb-3">
+                  <p className="text-gray-600 dark:text-gray-300 mb-3">
                     Your request is pending with <span className="font-medium">
                       {assistants.find(a => a.id === activeRequest.assistant_id)?.full_name || 'a graduation assistant'}
                     </span>. They will review your request and respond soon.
@@ -181,7 +181,7 @@ const StudentHome: React.FC = () => {
                   <button
                     onClick={handleCancelRequest}
                     disabled={cancellingRequest}
-                    className={`inline-flex items-center text-red-600 hover:text-red-800 font-medium ${
+                    className={`inline-flex items-center text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium ${
                       cancellingRequest ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                     aria-label="Cancel assistant request"
@@ -192,7 +192,7 @@ const StudentHome: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Choose a graduation assistant who will guide you through your thesis journey.
                 </p>
               )}
@@ -202,22 +202,22 @@ const StudentHome: React.FC = () => {
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
                 </div>
               ) : assistants.length === 0 && !activeRequest ? ( // Only show if no active request
-                <p className="text-gray-500 text-center py-2">No graduation assistants available at the moment.</p>
+                <p className="text-gray-500 dark:text-gray-400 text-center py-2">No graduation assistants available at the moment.</p>
               ) : !activeRequest && (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-4">
                   {assistants.slice(0, 3).map(assistant => (
                     <div 
                       key={assistant.id}
-                      className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
+                      className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200"
                     >
                       <div className="flex justify-center mb-3">
                         {/* Placeholder for assistant avatar */}
-                        <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+                        <div className="w-12 h-12 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-300">
                           {assistant.full_name ? assistant.full_name.charAt(0).toUpperCase() : 'GA'}
                         </div>
                       </div>
-                      <h3 className="text-center font-medium mb-1">{assistant.full_name || 'Unnamed'}</h3>
-                      <p className="text-center text-xs text-gray-500 mb-3">
+                      <h3 className="text-center font-medium mb-1 text-gray-900 dark:text-gray-100">{assistant.full_name || 'Unnamed'}</h3>
+                      <p className="text-center text-xs text-gray-500 dark:text-gray-400 mb-3">
                         {assistant.student_count || 0} {assistant.student_count === 1 ? 'Student' : 'Students'}
                       </p>
                       <button
@@ -255,8 +255,8 @@ const StudentHome: React.FC = () => {
 
         {/* Right Column: Calendar */}
         <div className="md:col-span-1">
-          <div className="bg-white rounded-lg shadow p-6">
-             <h2 className="text-lg font-medium text-gray-900 mb-4">Upcoming Deadlines</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border dark:border-gray-700">
+             <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Upcoming Deadlines</h2>
              <Calendar />
           </div>
         </div>

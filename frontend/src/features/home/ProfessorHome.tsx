@@ -123,11 +123,11 @@ const ProfessorHome: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="bg-white rounded-lg shadow p-8 mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 mb-8 border dark:border-gray-700">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
           Welcome, Professor {user?.full_name || ''}!
         </h1>
-        <p className="text-lg text-gray-600">
+        <p className="text-lg text-gray-600 dark:text-gray-300">
           Oversee thesis supervision, set deadlines, and manage academic progress.
         </p>
       </div>
@@ -138,15 +138,15 @@ const ProfessorHome: React.FC = () => {
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Set Deadlines Card */}
-            <div className="bg-blue-50 rounded-lg p-6 shadow-sm">
-              <ClockIcon className="h-10 w-10 text-blue-600 mb-4" />
-              <h2 className="text-lg font-medium text-gray-900 mb-2">Manage Deadlines</h2>
-              <p className="text-gray-600 mb-4">
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 shadow-sm border dark:border-blue-800">
+              <ClockIcon className="h-10 w-10 text-blue-600 dark:text-blue-400 mb-4" />
+              <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Manage Deadlines</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Set and manage thesis submission, review, and defense deadlines for all students.
               </p>
               <Link
                 to="/admin/set-deadlines"
-                className="text-blue-600 hover:text-blue-700 font-medium flex items-center"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center"
                 tabIndex={0}
                 aria-label="Set thesis deadlines"
               >
@@ -162,15 +162,15 @@ const ProfessorHome: React.FC = () => {
             </div>
 
             {/* View All Theses Card */}
-            <div className="bg-green-50 rounded-lg p-6 shadow-sm">
-              <DocumentTextIcon className="h-10 w-10 text-green-600 mb-4" />
-              <h2 className="text-lg font-medium text-gray-900 mb-2">All Theses Overview</h2>
-              <p className="text-gray-600 mb-4">
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 shadow-sm border dark:border-green-800">
+              <DocumentTextIcon className="h-10 w-10 text-green-600 dark:text-green-400 mb-4" />
+              <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">All Theses Overview</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Monitor thesis statuses across all students to help with deadline planning decisions.
               </p>
               <Link
                 to="/theses/all"
-                className="text-green-600 hover:text-green-700 font-medium flex items-center"
+                className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium flex items-center"
                 tabIndex={0}
                 aria-label="View all theses overview"
               >
@@ -187,10 +187,10 @@ const ProfessorHome: React.FC = () => {
           </div>
 
           {/* Pending Thesis Requests Section */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border dark:border-gray-700">
             <div className="flex items-center mb-6">
-              <ClockIcon className="h-6 w-6 text-blue-600 mr-2" />
-              <h2 className="text-xl font-bold text-gray-900">Pending Thesis Requests</h2>
+              <ClockIcon className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-2" />
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Pending Thesis Requests</h2>
             </div>
             
             {loadingRequests ? (
@@ -199,7 +199,7 @@ const ProfessorHome: React.FC = () => {
               </div>
             ) : pendingRequests.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">No pending thesis requests at the moment.</p>
+                <p className="text-gray-500 dark:text-gray-400">No pending thesis requests at the moment.</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -209,16 +209,16 @@ const ProfessorHome: React.FC = () => {
                   return (
                     <div 
                       key={request.id}
-                      className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors duration-150"
+                      className="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-150"
                     >
                       <div className="p-4">
                         <div className="mb-2">
-                          <h3 className="font-medium text-gray-900 mb-1">
+                          <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
                             Request from: {request.student_name ? 
                               <span className="font-semibold">{request.student_name}</span> 
                               : 'Unknown Student'}
                           </h3>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
                             Thesis Title: {request.thesis_title || 'Untitled Thesis'}
                           </p>
                         </div>
@@ -226,7 +226,7 @@ const ProfessorHome: React.FC = () => {
                         <div className="flex flex-wrap items-center justify-between mt-4">
                           <Link
                             to={`/theses/${request.thesis_id}`}
-                            className="text-blue-600 hover:text-blue-800 text-sm font-medium mr-4"
+                            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium mr-4"
                             tabIndex={0}
                             aria-label={`View thesis: ${request.thesis_title || 'Untitled'}`}
                           >
@@ -266,17 +266,17 @@ const ProfessorHome: React.FC = () => {
           </div>
 
           {/* Supervised Theses Section */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border dark:border-gray-700">
             <div className="flex items-center mb-6">
-              <AcademicCapIcon className="h-6 w-6 text-primary-600 mr-2" />
-              <h2 className="text-xl font-bold text-gray-900">Your Supervised Theses</h2>
+              <AcademicCapIcon className="h-6 w-6 text-primary-600 dark:text-primary-400 mr-2" />
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Your Supervised Theses</h2>
             </div>
             
             {supervisedTheses.length === 0 ? (
               <div className="text-center py-8">
-                <UserGroupIcon className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-500">You currently have no supervised theses.</p>
-                <p className="text-sm text-gray-400 mt-2">
+                <UserGroupIcon className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">You currently have no supervised theses.</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
                   Students can request thesis supervision from professors and graduation assistants.
                 </p>
               </div>
@@ -286,13 +286,13 @@ const ProfessorHome: React.FC = () => {
                   <Link 
                     key={thesis.id}
                     to={`/theses/${thesis.id}`}
-                    className="block p-4 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-150"
+                    className="block p-4 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-150"
                     aria-label={`View details for thesis: ${thesis.title}`}
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-800 truncate">{thesis.title}</h4>
-                        <p className="text-sm text-gray-600 mt-1">Student ID: {thesis.student_id}</p>
+                        <h4 className="font-medium text-gray-800 dark:text-gray-200 truncate">{thesis.title}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Student ID: {thesis.student_id}</p>
                         {thesis.status && (
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${
                             thesis.status === 'approved' ? 'bg-green-100 text-green-800' :
@@ -314,10 +314,10 @@ const ProfessorHome: React.FC = () => {
 
         {/* Right Column: Calendar */}
         <div className="md:col-span-1">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border dark:border-gray-700">
             <div className="flex items-center mb-4">
-              <CalendarDaysIcon className="h-5 w-5 text-gray-600 mr-2" />
-              <h2 className="text-lg font-medium text-gray-900">Upcoming Deadlines</h2>
+              <CalendarDaysIcon className="h-5 w-5 text-gray-600 dark:text-gray-300 mr-2" />
+              <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Upcoming Deadlines</h2>
             </div>
             <Calendar />
           </div>

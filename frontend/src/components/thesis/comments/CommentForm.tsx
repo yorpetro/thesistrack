@@ -27,13 +27,13 @@ const CommentForm = ({
   };
 
   return (
-    <div className="border border-neutral rounded-custom overflow-hidden">
-      <div className="bg-neutral-light p-2 px-4 border-b border-neutral text-sm text-earth flex justify-between items-center">
+    <div className="border border-neutral dark:border-gray-600 rounded-custom overflow-hidden">
+      <div className="bg-neutral-light dark:bg-gray-700 p-2 px-4 border-b border-neutral dark:border-gray-600 text-sm text-earth dark:text-gray-300 flex justify-between items-center">
         <span>{isReply ? 'Reply to comment' : 'Write a comment'}</span>
         {onCancel && (
           <button 
             onClick={onCancel}
-            className="text-earth hover:text-secondary"
+            className="text-earth dark:text-gray-400 hover:text-secondary dark:hover:text-gray-200"
           >
             <XMarkIcon className="h-4 w-4" />
           </button>

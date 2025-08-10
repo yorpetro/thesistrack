@@ -16,7 +16,7 @@ import {
 
 const ProfileSettings = () => {
   const navigate = useNavigate();
-  const { user: authUser, updateUser } = useAuthStore();
+  const { updateUser } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [user, setUser] = useState<User | null>(null);
@@ -168,38 +168,38 @@ const ProfileSettings = () => {
       <div className="flex items-center gap-4">
         <button 
           onClick={() => navigate(-1)}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
         >
           ← Back
         </button>
-        <h1 className="text-2xl font-bold text-secondary">Profile Settings</h1>
+        <h1 className="text-2xl font-bold text-secondary dark:text-gray-100">Profile Settings</h1>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-md">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded-md">
           {success}
         </div>
       )}
 
       {/* Profile Picture Section */}
       <div className="card">
-        <h2 className="text-lg font-semibold text-secondary mb-4">Profile Picture</h2>
+        <h2 className="text-lg font-semibold text-secondary dark:text-gray-100 mb-4">Profile Picture</h2>
         <div className="flex items-center gap-6">
           <div className="relative">
             {user.profile_picture ? (
               <img
                 src={getProfileImageUrl(user.profile_picture)}
                 alt="Profile"
-                className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
+                className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-gray-600 shadow-md"
               />
             ) : (
-              <UserCircleIcon className="w-24 h-24 text-gray-400" />
+              <UserCircleIcon className="w-24 h-24 text-gray-400 dark:text-gray-500" />
             )}
             {uploadingImage && (
               <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
@@ -236,7 +236,7 @@ const ProfileSettings = () => {
               </button>
             )}
             
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Supported formats: JPG, PNG, GIF, WebP. Max size: 5MB.
             </p>
           </div>
@@ -245,10 +245,10 @@ const ProfileSettings = () => {
 
       {/* Profile Information Form */}
       <div className="card">
-        <h2 className="text-lg font-semibold text-secondary mb-4">Profile Information</h2>
+        <h2 className="text-lg font-semibold text-secondary dark:text-gray-100 mb-4">Profile Information</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
               Full Name
             </label>
             <input
@@ -257,14 +257,12 @@ const ProfileSettings = () => {
               name="full_name"
               value={formData.full_name}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             />
           </div>
 
-
-
           <div>
-            <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="bio" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
               Bio
             </label>
             <textarea
@@ -273,7 +271,7 @@ const ProfileSettings = () => {
               value={formData.bio}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               placeholder="Tell us a bit about yourself..."
             />
           </div>
@@ -284,7 +282,7 @@ const ProfileSettings = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
               Cancel
             </button>

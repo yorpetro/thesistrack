@@ -212,14 +212,14 @@ const CommentSection = ({ thesisId, currentUser }: CommentSectionProps) => {
 
   return (
     <div className="card">
-      <h2 className="text-xl font-bold mb-6 text-secondary flex items-center">
-        <ChatBubbleLeftIcon className="h-5 w-5 mr-2 text-primary" />
+      <h2 className="text-xl font-bold mb-6 text-secondary dark:text-gray-100 flex items-center">
+        <ChatBubbleLeftIcon className="h-5 w-5 mr-2 text-primary dark:text-primary-400" />
         Comments
       </h2>
 
       {/* Error Message */}
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-100 rounded-custom text-red-600">
+        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-custom text-red-600 dark:text-red-300">
           {error}
         </div>
       )}
@@ -230,7 +230,7 @@ const CommentSection = ({ thesisId, currentUser }: CommentSectionProps) => {
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
         </div>
       ) : comments.length === 0 ? (
-        <div className="text-center py-8 text-earth">
+        <div className="text-center py-8 text-earth dark:text-gray-400">
           <p>No comments yet</p>
         </div>
       ) : (
@@ -251,10 +251,10 @@ const CommentSection = ({ thesisId, currentUser }: CommentSectionProps) => {
       )}
 
       {/* New Comment Form */}
-      <div className="mt-6 pt-6 border-t border-neutral">
+      <div className="mt-6 pt-6 border-t border-neutral dark:border-gray-600">
         {!currentUser ? (
-          <div className="text-center py-4 text-earth">
-            <p>Please <Link to="/login" className="text-primary hover:underline">log in</Link> to leave a comment.</p>
+          <div className="text-center py-4 text-earth dark:text-gray-400">
+            <p>Please <Link to="/login" className="text-primary dark:text-primary-400 hover:underline">log in</Link> to leave a comment.</p>
           </div>
         ) : (
           <CommentForm

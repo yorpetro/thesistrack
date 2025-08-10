@@ -132,11 +132,11 @@ const AssistantHome: React.FC = () => {
   return (
     <div className="space-y-8">
         {/* Welcome Section */}
-        <div className="bg-white rounded-lg shadow p-8 mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 mb-8 border dark:border-gray-700">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Welcome, {user?.full_name || 'Assistant'}!
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Manage student thesis requests and oversee your assigned theses.
           </p>
         </div>
@@ -145,10 +145,10 @@ const AssistantHome: React.FC = () => {
             {/* Left Column: Requests and Assigned Theses */}
             <div className="md:col-span-2 space-y-8">
                 {/* Pending Thesis Requests Section */}
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border dark:border-gray-700">
                     <div className="flex items-center mb-6">
-                        <ClockIcon className="h-6 w-6 text-blue-600 mr-2" />
-                        <h2 className="text-xl font-bold text-gray-900">Pending Thesis Requests</h2>
+                        <ClockIcon className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-2" />
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Pending Thesis Requests</h2>
                     </div>
                     
                     {loadingRequests ? (
@@ -157,7 +157,7 @@ const AssistantHome: React.FC = () => {
                         </div>
                     ) : pendingRequests.length === 0 ? (
                         <div className="text-center py-8">
-                        <p className="text-gray-500">No pending thesis requests at the moment.</p>
+                        <p className="text-gray-500 dark:text-gray-400">No pending thesis requests at the moment.</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
@@ -167,16 +167,16 @@ const AssistantHome: React.FC = () => {
                             return (
                             <div 
                                 key={request.id}
-                                className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors duration-150"
+                                className="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-150"
                             >
                                 <div className="p-4">
                                 <div className="mb-2">
-                                    <h3 className="font-medium text-gray-900 mb-1">
+                                    <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
                                     Request from: {request.student_name ? 
                                         <span className="font-semibold">{request.student_name}</span> 
                                         : 'Unknown Student'}
                                     </h3>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-600 dark:text-gray-300">
                                     Thesis Title: {request.thesis_title || 'Untitled Thesis'}
                                     </p>
                                 </div>
@@ -184,7 +184,7 @@ const AssistantHome: React.FC = () => {
                                 <div className="flex flex-wrap items-center justify-between mt-4">
                                     <Link
                                     to={`/theses/${request.thesis_id}`} // Link to view thesis details
-                                    className="text-blue-600 hover:text-blue-800 text-sm font-medium mr-4"
+                                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium mr-4"
                                     tabIndex={0}
                                     aria-label={`View thesis: ${request.thesis_title || 'Untitled'}`}
                                     >
@@ -224,10 +224,10 @@ const AssistantHome: React.FC = () => {
                 </div>
 
                 {/* Assigned Theses Section */}
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border dark:border-gray-700">
                     <div className="flex items-center mb-6">
-                        <DocumentTextIcon className="h-6 w-6 text-primary-600 mr-2" />
-                        <h2 className="text-xl font-bold text-gray-900">Your Assigned Theses</h2>
+                        <DocumentTextIcon className="h-6 w-6 text-primary-600 dark:text-primary-400 mr-2" />
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Your Assigned Theses</h2>
                     </div>
                     {loadingTheses ? (
                        <div className="flex justify-center items-center h-32">
@@ -235,7 +235,7 @@ const AssistantHome: React.FC = () => {
                        </div>
                     ) : assignedTheses.length === 0 ? (
                         <div className="text-center py-8">
-                            <p className="text-gray-500">You currently have no assigned theses.</p>
+                            <p className="text-gray-500 dark:text-gray-400">You currently have no assigned theses.</p>
                             {/* Optional: Link to browse available theses or info */} 
                         </div>
                     ) : (
@@ -244,12 +244,12 @@ const AssistantHome: React.FC = () => {
                                 <Link 
                                     key={thesis.id}
                                     to={`/theses/${thesis.id}`}
-                                    className="block p-3 border border-gray-200 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-150"
+                                    className="block p-3 border border-gray-200 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-150"
                                     aria-label={`View details for thesis: ${thesis.title}`}
                                 >
-                                    <h4 className="font-medium text-gray-800">{thesis.title}</h4>
+                                    <h4 className="font-medium text-gray-800 dark:text-gray-200">{thesis.title}</h4>
                                     {/* TODO: Replace student_id with student_name once available from API */}
-                                    <p className="text-sm text-gray-600">Student ID: {thesis.student_id}</p> 
+                                    <p className="text-sm text-gray-600 dark:text-gray-300">Student ID: {thesis.student_id}</p> 
                                     {/* Add more relevant details like status if available */} 
                                 </Link>
                             ))}
@@ -270,8 +270,8 @@ const AssistantHome: React.FC = () => {
 
              {/* Right Column: Calendar */}
             <div className="md:col-span-1">
-                <div className="bg-white rounded-lg shadow p-6">
-                    <h2 className="text-lg font-medium text-gray-900 mb-4">Upcoming Deadlines & Events</h2>
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border dark:border-gray-700">
+                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Upcoming Deadlines & Events</h2>
                     <Calendar />
                 </div>
             </div>

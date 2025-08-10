@@ -157,10 +157,10 @@ const GraduationAssistantSelection = () => {
   if (!hasThesis) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="bg-white rounded-lg shadow p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 border dark:border-gray-700">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Create Your Thesis First</h1>
-            <p className="mb-6 text-gray-600">
+            <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Create Your Thesis First</h1>
+            <p className="mb-6 text-gray-600 dark:text-gray-300">
               You need to create a thesis before requesting a graduation assistant.
             </p>
             <Link 
@@ -180,7 +180,7 @@ const GraduationAssistantSelection = () => {
       <div className="mb-6">
         <Link 
           to="/" 
-          className="inline-flex items-center text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
           tabIndex={0}
           aria-label="Back to Home"
         >
@@ -189,25 +189,25 @@ const GraduationAssistantSelection = () => {
         </Link>
       </div>
       
-      <div className="bg-white rounded-lg shadow p-8">
-        <h1 className="text-2xl font-bold mb-6">Request a Graduation Assistant</h1>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 border dark:border-gray-700">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Request a Graduation Assistant</h1>
         
-        <p className="mb-6 text-gray-600">
+        <p className="mb-6 text-gray-600 dark:text-gray-300">
           Please request a graduation assistant who will guide you through your thesis process.
           The assistant will be notified and can choose to accept or decline your request.
         </p>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+          <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded relative mb-6" role="alert">
             <strong className="font-bold">Error: </strong>
             <span className="block sm:inline">{error}</span>
           </div>
         )}
         
         {activeRequest && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
-            <h2 className="text-lg font-medium text-blue-800 mb-2">Pending Request</h2>
-            <p className="text-blue-700 mb-4">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
+            <h2 className="text-lg font-medium text-blue-800 dark:text-blue-300 mb-2">Pending Request</h2>
+            <p className="text-blue-700 dark:text-blue-300 mb-4">
               You have a pending request with {
                 assistants.find(a => a.id === activeRequest.assistant_id)?.full_name || 'a graduation assistant'
               }.
@@ -215,7 +215,7 @@ const GraduationAssistantSelection = () => {
             <button
               onClick={handleCancelRequest}
               disabled={cancellingRequest}
-              className={`bg-white border border-blue-300 hover:bg-blue-50 text-blue-700 font-medium py-2 px-4 rounded ${
+              className={`bg-white dark:bg-gray-700 border border-blue-300 dark:border-blue-600 hover:bg-blue-50 dark:hover:bg-gray-600 text-blue-700 dark:text-blue-300 font-medium py-2 px-4 rounded ${
                 cancellingRequest ? 'opacity-50 cursor-not-allowed' : ''
               }`}
               aria-label="Cancel request"
@@ -227,7 +227,7 @@ const GraduationAssistantSelection = () => {
 
         {assistants.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-500">No graduation assistants are available at the moment.</p>
+            <p className="text-gray-500 dark:text-gray-400">No graduation assistants are available at the moment.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -238,28 +238,28 @@ const GraduationAssistantSelection = () => {
               return (
                 <div 
                   key={assistant.id} 
-                  className={`border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 ${
+                  className={`bg-white dark:bg-gray-800 border dark:border-gray-600 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 ${
                     isPending ? 'ring-2 ring-blue-500' : ''
                   } ${isDisabled ? 'opacity-50' : ''}`}
                 >
                   <div className="p-6">
                     <div className="flex items-center justify-center mb-4">
-                      <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+                      <div className="w-24 h-24 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-300">
                         {assistant.full_name ? assistant.full_name.charAt(0).toUpperCase() : 'GA'}
                       </div>
                     </div>
                     
-                    <h2 className="text-xl font-semibold text-center mb-2">
+                    <h2 className="text-xl font-semibold text-center mb-2 text-gray-900 dark:text-gray-100">
                       {assistant.full_name || 'Unnamed Assistant'}
                     </h2>
                     
                     <div className="flex justify-center items-center mb-4">
-                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                      <span className="bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
                         {assistant.student_count || 0} {assistant.student_count === 1 ? 'Student' : 'Students'}
                       </span>
                     </div>
                     
-                    <p className="text-gray-600 text-sm mb-4 text-center">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 text-center">
                       {assistant.bio || 'No bio available.'}
                     </p>
                     
@@ -268,7 +268,7 @@ const GraduationAssistantSelection = () => {
                         <button
                           onClick={handleCancelRequest}
                           disabled={cancellingRequest}
-                          className={`bg-white border border-blue-300 hover:bg-blue-50 text-blue-700 font-medium py-2 px-4 rounded ${
+                          className={`bg-white dark:bg-gray-700 border border-blue-300 dark:border-blue-600 hover:bg-blue-50 dark:hover:bg-gray-600 text-blue-700 dark:text-blue-300 font-medium py-2 px-4 rounded ${
                             cancellingRequest ? 'opacity-50 cursor-not-allowed' : ''
                           }`}
                           aria-label={`Cancel request to ${assistant.full_name || 'this assistant'}`}

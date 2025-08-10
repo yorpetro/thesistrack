@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getThesis, updateThesis, createThesisReview } from '../../services/thesisService';
 import { ThesisWithRelations, ThesisStatus, ReviewCreate } from '../../types';
 import ThesisFileManager from '../../components/thesis/ThesisFileManager';
@@ -13,12 +13,12 @@ import Select from '../../components/common/Select';
 import ProfilePicture from '../../components/common/ProfilePicture';
 
 const statusColors: Record<ThesisStatus, { bg: string; text: string }> = {
-  draft: { bg: 'bg-gray-100', text: 'text-gray-800' },
-  submitted: { bg: 'bg-yellow-100', text: 'text-yellow-800' },
-  under_review: { bg: 'bg-blue-100', text: 'text-blue-800' },
-  needs_revision: { bg: 'bg-orange-100', text: 'text-orange-800' },
-  approved: { bg: 'bg-green-100', text: 'text-green-800' },
-  declined: { bg: 'bg-red-100', text: 'text-red-800' }
+  draft: { bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-800 dark:text-gray-300' },
+  submitted: { bg: 'bg-yellow-100 dark:bg-yellow-900/20', text: 'text-yellow-800 dark:text-yellow-300' },
+  under_review: { bg: 'bg-blue-100 dark:bg-blue-900/20', text: 'text-blue-800 dark:text-blue-300' },
+  needs_revision: { bg: 'bg-orange-100 dark:bg-orange-900/20', text: 'text-orange-800 dark:text-orange-300' },
+  approved: { bg: 'bg-green-100 dark:bg-green-900/20', text: 'text-green-800 dark:text-green-300' },
+  declined: { bg: 'bg-red-100 dark:bg-red-900/20', text: 'text-red-800 dark:text-red-300' }
 };
 
 const statusLabels: Record<ThesisStatus, string> = {
@@ -32,7 +32,7 @@ const statusLabels: Record<ThesisStatus, string> = {
 
 const ThesisPage = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+
   const { user } = useAuthStore();
   const [thesis, setThesis] = useState<ThesisWithRelations | null>(null);
   const [loading, setLoading] = useState(true);
@@ -156,7 +156,7 @@ const ThesisPage = () => {
         <div className="flex items-center justify-between mb-6">
           <Link
             to="/theses"
-            className="inline-flex items-center text-accent hover:text-accent-dark transition-colors"
+            className="inline-flex items-center text-accent dark:text-accent-light hover:text-accent-dark dark:hover:text-accent transition-colors"
           >
             <ArrowLeftIcon className="h-4 w-4 mr-1" />
             <span>Back to theses</span>
@@ -184,8 +184,8 @@ const ThesisPage = () => {
       {thesis.supervisor && (
         <div className="card">
           <div className="flex items-center mb-3">
-            <UserCircleIcon className="h-6 w-6 mr-2 text-secondary" />
-            <h3 className="text-lg font-semibold text-secondary">Assigned Reviewer</h3>
+            <UserCircleIcon className="h-6 w-6 mr-2 text-secondary dark:text-gray-300" />
+            <h3 className="text-lg font-semibold text-secondary dark:text-gray-100">Assigned Reviewer</h3>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
@@ -194,7 +194,7 @@ const ThesisPage = () => {
                 alt={thesis.supervisor.full_name || 'Supervisor'}
                 size="md"
               />
-              <span className="text-secondary font-medium">
+              <span className="text-secondary dark:text-gray-200 font-medium">
                 {thesis.supervisor.full_name || 'N/A'}
               </span>
             </div>
@@ -246,7 +246,7 @@ const ThesisPage = () => {
             required
           />
           {reviewError && (
-            <p className="text-sm text-red-600">{reviewError}</p>
+            <p className="text-sm text-red-600 dark:text-red-400">{reviewError}</p>
           )}
           <div className="flex justify-end space-x-3">
             <button

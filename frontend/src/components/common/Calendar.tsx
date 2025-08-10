@@ -40,11 +40,11 @@ const Calendar: React.FC = () => {
 
   const getTypeColor = (type: DeadlineType) => {
     switch (type) {
-      case 'submission': return 'text-blue-600 bg-blue-50';
-      case 'review': return 'text-green-600 bg-green-50';
-      case 'defense': return 'text-purple-600 bg-purple-50';
-      case 'revision': return 'text-orange-600 bg-orange-50';
-      default: return 'text-gray-600 bg-gray-50';
+      case 'submission': return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20';
+      case 'review': return 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20';
+      case 'defense': return 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20';
+      case 'revision': return 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20';
+      default: return 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800';
     }
   };
 
@@ -187,7 +187,7 @@ const Calendar: React.FC = () => {
 
   if (error) {
     return (
-      <div className="text-center text-red-600 text-sm p-4">
+      <div className="text-center text-red-600 dark:text-red-400 text-sm p-4">
         {error}
       </div>
     );
@@ -195,8 +195,8 @@ const Calendar: React.FC = () => {
 
   if (deadlines.length === 0) {
     return (
-      <div className="text-center text-gray-500 p-6">
-        <CalendarDaysIcon className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+      <div className="text-center text-gray-500 dark:text-gray-400 p-6">
+        <CalendarDaysIcon className="h-8 w-8 mx-auto mb-2 text-gray-400 dark:text-gray-500" />
         <p className="text-sm">No upcoming deadlines</p>
       </div>
     );
@@ -210,14 +210,14 @@ const Calendar: React.FC = () => {
       {criticalNotifications.length > 0 && (
         <div className="space-y-2 mb-4">
           {criticalNotifications.map((deadline) => (
-            <div key={`critical-${deadline.id}`} className="bg-red-100 border border-red-300 rounded-lg p-3">
+            <div key={`critical-${deadline.id}`} className="bg-red-100 dark:bg-red-900/20 border border-red-300 dark:border-red-800 rounded-lg p-3">
               <div className="flex items-center">
-                <ExclamationTriangleIcon className="h-4 w-4 text-red-500 mr-2 flex-shrink-0" />
+                <ExclamationTriangleIcon className="h-4 w-4 text-red-500 dark:text-red-400 mr-2 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-red-800 truncate">
+                  <p className="text-sm font-medium text-red-800 dark:text-red-300 truncate">
                     {deadline.title}
                   </p>
-                  <p className="text-xs text-red-600">
+                  <p className="text-xs text-red-600 dark:text-red-400">
                     {deadline.days_remaining !== null && deadline.days_remaining <= 0 
                       ? 'OVERDUE' 
                       : deadline.days_remaining === 1 
@@ -237,15 +237,15 @@ const Calendar: React.FC = () => {
           key={deadline.id} 
           className={`rounded-lg p-3 border-l-4 ${
             deadline.days_remaining !== null && deadline.days_remaining <= 3 
-              ? 'border-l-red-500 bg-red-50' 
+              ? 'border-l-red-500 bg-red-50 dark:bg-red-900/20' 
               : deadline.days_remaining !== null && deadline.days_remaining <= 7
-              ? 'border-l-orange-500 bg-orange-50'
-              : 'border-l-gray-300 bg-gray-50'
+              ? 'border-l-orange-500 bg-orange-50 dark:bg-orange-900/20'
+              : 'border-l-gray-300 dark:border-l-gray-600 bg-gray-50 dark:bg-gray-800'
           }`}
         >
           <div className="flex items-start justify-between mb-2">
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-medium text-gray-900 truncate">
+              <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                 {deadline.title}
               </h4>
               <div className="flex items-center mt-1 space-x-2">
@@ -257,7 +257,7 @@ const Calendar: React.FC = () => {
             </div>
           </div>
           
-          <div className="text-xs text-gray-600">
+          <div className="text-xs text-gray-600 dark:text-gray-300">
             <div className="flex justify-between items-center">
               <span>{formatDate(deadline.deadline_date)}</span>
               <span>{formatTime(deadline.deadline_date)}</span>
@@ -265,7 +265,7 @@ const Calendar: React.FC = () => {
             
             {/* Display location for defense deadlines */}
             {deadline.deadline_type === 'defense' && deadline.location && (
-              <div className="mt-1 text-xs text-gray-500 flex items-center">
+              <div className="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center">
                 <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -276,9 +276,9 @@ const Calendar: React.FC = () => {
             
             {deadline.days_remaining !== null && deadline.days_remaining !== undefined && (
               <div className={`mt-1 font-medium ${
-                deadline.days_remaining < 0 ? 'text-red-600' :
-                deadline.days_remaining <= 3 ? 'text-orange-600' :
-                deadline.days_remaining <= 7 ? 'text-yellow-600' : 'text-green-600'
+                deadline.days_remaining < 0 ? 'text-red-600 dark:text-red-400' :
+                deadline.days_remaining <= 3 ? 'text-orange-600 dark:text-orange-400' :
+                deadline.days_remaining <= 7 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'
               }`}>
                 {getDaysRemainingText(deadline.days_remaining)}
               </div>
@@ -288,7 +288,7 @@ const Calendar: React.FC = () => {
           </div>
           
           {deadline.description && (
-            <p className="text-xs text-gray-500 mt-2 line-clamp-2">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 line-clamp-2">
               {deadline.description}
             </p>
           )}
@@ -296,10 +296,10 @@ const Calendar: React.FC = () => {
       ))}
       
       {user?.role === 'professor' && (
-        <div className="mt-4 pt-3 border-t border-gray-200">
+        <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
           <a 
             href="/admin/set-deadlines" 
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
           >
             Manage Deadlines →
           </a>

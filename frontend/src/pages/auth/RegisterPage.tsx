@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
+import ThemeToggle from '../../components/common/ThemeToggle';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -39,16 +40,21 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-50 to-neutral-light px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white rounded-custom shadow-custom-lg p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-50 to-neutral-light dark:from-gray-900 dark:to-gray-800 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+      {/* Theme toggle in top right corner */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      
+      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-custom shadow-custom-lg p-8 border dark:border-gray-700">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Thesis<span className="text-accent">Track</span>
           </h1>
-          <h2 className="mt-4 text-2xl font-bold text-secondary">
+          <h2 className="mt-4 text-2xl font-bold text-secondary dark:text-gray-200">
             Create Account
           </h2>
-          <p className="mt-2 text-sm text-earth">
+          <p className="mt-2 text-sm text-earth dark:text-gray-400">
             Join ThesisTrack to manage your academic projects
           </p>
         </div>
@@ -56,7 +62,7 @@ const RegisterPage = () => {
         <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="full-name" className="block text-sm font-medium text-secondary mb-1">
+              <label htmlFor="full-name" className="block text-sm font-medium text-secondary dark:text-gray-200 mb-1">
                 Full name
               </label>
               <input
@@ -72,7 +78,7 @@ const RegisterPage = () => {
             </div>
             
             <div>
-              <label htmlFor="email-address" className="block text-sm font-medium text-secondary mb-1">
+              <label htmlFor="email-address" className="block text-sm font-medium text-secondary dark:text-gray-200 mb-1">
                 Email address
               </label>
               <input
@@ -89,7 +95,7 @@ const RegisterPage = () => {
             </div>
             
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-secondary mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-secondary dark:text-gray-200 mb-1">
                 Password
               </label>
               <input
@@ -106,7 +112,7 @@ const RegisterPage = () => {
             </div>
             
             <div>
-              <label htmlFor="confirm-password" className="block text-sm font-medium text-secondary mb-1">
+              <label htmlFor="confirm-password" className="block text-sm font-medium text-secondary dark:text-gray-200 mb-1">
                 Confirm password
               </label>
               <input
@@ -123,7 +129,7 @@ const RegisterPage = () => {
             </div>
             
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-secondary mb-1">
+              <label htmlFor="role" className="block text-sm font-medium text-secondary dark:text-gray-200 mb-1">
                 Your role
               </label>
               <select
@@ -142,8 +148,8 @@ const RegisterPage = () => {
           </div>
 
           {(formError || error) && (
-            <div className="rounded-custom bg-red-50 border border-red-200 p-3">
-              <div className="text-sm text-red-600">
+            <div className="rounded-custom bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3">
+              <div className="text-sm text-red-600 dark:text-red-400">
                 {formError || error}
               </div>
             </div>
@@ -170,7 +176,7 @@ const RegisterPage = () => {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-earth">
+          <p className="text-sm text-earth dark:text-gray-400">
             Already have an account?{' '}
             <Link to="/login" className="font-medium text-primary hover:text-primary-600 transition duration-200">
               Sign in here
@@ -180,7 +186,7 @@ const RegisterPage = () => {
       </div>
 
       <div className="mt-8 text-center">
-        <p className="text-xs text-earth-light">
+        <p className="text-xs text-earth-light dark:text-gray-500">
           © {new Date().getFullYear()} ThesisTrack. All rights reserved.
         </p>
       </div>

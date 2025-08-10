@@ -18,12 +18,12 @@ import {
 import { format } from 'date-fns';
 
 const statusColors: Record<ThesisStatus, { bg: string; text: string }> = {
-  draft: { bg: 'bg-gray-100', text: 'text-gray-800' },
-  submitted: { bg: 'bg-yellow-100', text: 'text-yellow-800' },
-  under_review: { bg: 'bg-blue-100', text: 'text-blue-800' },
-  needs_revision: { bg: 'bg-orange-100', text: 'text-orange-800' },
-  approved: { bg: 'bg-green-100', text: 'text-green-800' },
-  declined: { bg: 'bg-red-100', text: 'text-red-800' }
+  draft: { bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-800 dark:text-gray-300' },
+  submitted: { bg: 'bg-yellow-100 dark:bg-yellow-900/20', text: 'text-yellow-800 dark:text-yellow-300' },
+  under_review: { bg: 'bg-blue-100 dark:bg-blue-900/20', text: 'text-blue-800 dark:text-blue-300' },
+  needs_revision: { bg: 'bg-orange-100 dark:bg-orange-900/20', text: 'text-orange-800 dark:text-orange-300' },
+  approved: { bg: 'bg-green-100 dark:bg-green-900/20', text: 'text-green-800 dark:text-green-300' },
+  declined: { bg: 'bg-red-100 dark:bg-red-900/20', text: 'text-red-800 dark:text-red-300' }
 };
 
 const statusLabels: Record<ThesisStatus, string> = {
@@ -199,13 +199,13 @@ const AllThesesList = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-secondary">All Theses Overview</h1>
-          <p className="text-earth mt-1">Monitor thesis statuses across all students for deadline planning</p>
+          <h1 className="text-2xl font-bold text-secondary dark:text-gray-100">All Theses Overview</h1>
+          <p className="text-earth dark:text-gray-400 mt-1">Monitor thesis statuses across all students for deadline planning</p>
         </div>
       </div>
 
       {/* Status Filter Tabs */}
-      <div className="border-b border-neutral-200">
+      <div className="border-b border-neutral-200 dark:border-gray-700">
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
           {[
             { key: 'all' as const, label: 'All Theses', count: statusCounts.all },
@@ -217,14 +217,14 @@ const AllThesesList = () => {
             <button
               key={tab.key}
               onClick={() => setFilter(tab.key)}
-              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
                 filter === tab.key
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
               }`}
             >
               {tab.label}
-              <span className="ml-2 bg-gray-100 text-gray-900 rounded-full py-0.5 px-2.5 text-xs font-medium">
+              <span className="ml-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 rounded-full py-0.5 px-2.5 text-xs font-medium">
                 {tab.count}
               </span>
             </button>
@@ -242,11 +242,11 @@ const AllThesesList = () => {
         </div>
       ) : filteredTheses.length === 0 ? (
         <div className="card text-center p-10">
-          <div className="bg-neutral/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <DocumentTextIcon className="h-10 w-10 text-secondary" />
+          <div className="bg-neutral/50 dark:bg-gray-700/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <DocumentTextIcon className="h-10 w-10 text-secondary dark:text-gray-300" />
           </div>
-          <h2 className="text-xl font-medium text-secondary mb-2">No theses found</h2>
-          <p className="text-earth mb-6">
+          <h2 className="text-xl font-medium text-secondary dark:text-gray-100 mb-2">No theses found</h2>
+          <p className="text-earth dark:text-gray-400 mb-6">
             {filter === 'all' 
               ? 'There are currently no theses in the system.' 
               : `No theses with status "${statusLabels[filter as ThesisStatus]}" found.`}

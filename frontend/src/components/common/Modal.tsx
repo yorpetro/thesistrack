@@ -39,16 +39,16 @@ const Modal: React.FC<ModalProps> = ({
       role="dialog"
     >
       <div
-        className={`bg-white rounded-lg shadow-xl transform transition-all duration-300 ease-in-out w-full m-4 ${sizeClasses[size]} flex flex-col`}
+        className={`bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all duration-300 ease-in-out w-full m-4 ${sizeClasses[size]} flex flex-col border dark:border-gray-700`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-neutral-light">
-          <h3 className="text-lg font-semibold text-primary" id="modal-title">
+        <div className="flex items-center justify-between p-4 border-b border-neutral-light dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-primary dark:text-gray-100" id="modal-title">
             {title}
           </h3>
           <button
             onClick={onClose}
-            className="text-neutral hover:text-neutral-dark transition-colors"
+            className="text-neutral dark:text-gray-400 hover:text-neutral-dark dark:hover:text-gray-200 transition-colors"
             aria-label="Close modal"
           >
             <XMarkIcon className="h-6 w-6" />
