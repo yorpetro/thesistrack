@@ -54,4 +54,9 @@ class UserCreateOAuth(BaseModel):
     full_name: Optional[str] = None
     role: UserRole
     oauth_provider: str
-    oauth_id: str 
+    oauth_id: str
+
+
+# Google OAuth authentication request
+class GoogleAuthRequest(BaseModel):
+    token: str 

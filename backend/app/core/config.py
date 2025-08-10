@@ -1,6 +1,8 @@
 from pydantic_settings import BaseSettings
 from pydantic import EmailStr, validator
 import secrets
+import os
+from pathlib import Path
 from typing import Optional, List, Union
 
 
@@ -42,7 +44,8 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: Optional[str] = None
 
     class Config:
-        env_file = ".env"
+        # Look for .env file in the project root (parent of backend)
+        env_file = Path(__file__).parent.parent.parent.parent / ".env"
         case_sensitive = True
 
 

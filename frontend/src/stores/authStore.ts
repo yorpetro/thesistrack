@@ -11,6 +11,7 @@ interface AuthState {
   isLoading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: (credential: string) => Promise<void>;
   register: (email: string, password: string, fullName: string, role: 'student' | 'professor' | 'graduation_assistant') => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
@@ -89,6 +90,59 @@ export const useAuthStore = create<AuthState>()(
           console.error('Login error:', err);
           set({ 
             error: 'Invalid email or password', 
+            isLoading: false,
+            isAuthenticated: false
+          });
+          throw err;
+        }
+      },
+
+      loginWithGoogle: async (credential: string) => {
+        try {
+          set({ isLoading: true, error: null });
+          
+          // First check if backend is healthy
+          const isHealthy = await get().checkBackendHealth();
+          if (!isHealthy) {
+            throw new Error('Backend service is not available');
+          }
+          
+          console.log('Sending Google auth request');
+          
+          // Use relative URL with axios
+          const response = await axios.post('/api/v1/auth/google', {
+            token: credential
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          console.log('Google auth response:', response.data);
+          
+          const { access_token, token_type, user_id, email, full_name, role: userRole } = response.data;
+          
+          // Set the auth state
+          const user: AuthUser = {
+            id: user_id,
+            email: email,
+            full_name: full_name,
+            role: userRole
+          };
+          
+          set({ 
+            token: access_token,
+            user: user,
+            isAuthenticated: true,
+            isLoading: false
+          });
+          
+          localStorage.setItem('token', access_token);
+          api.defaults.headers.common['Authorization'] = `${token_type} ${access_token}`;
+        } catch (err) {
+          console.error('Google login error:', err);
+          set({ 
+            error: 'Google authentication failed', 
             isLoading: false,
             isAuthenticated: false
           });

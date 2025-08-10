@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import ThemeToggle from '../../components/common/ThemeToggle';
+import GoogleSignInButton from '../../components/auth/GoogleSignInButton';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const { register, isLoading, error } = useAuthStore();
+  const { register, loginWithGoogle, isLoading, error } = useAuthStore();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,6 +38,19 @@ const RegisterPage = () => {
     } catch (err) {
       // Error is handled in the auth store
     }
+  };
+
+  const handleGoogleSuccess = async (credential: string) => {
+    try {
+      await loginWithGoogle(credential);
+      navigate('/');
+    } catch (err) {
+      // Error is handled in the auth store
+    }
+  };
+
+  const handleGoogleError = (error: any) => {
+    console.error('Google Sign-In error:', error);
   };
 
   return (
@@ -174,6 +188,31 @@ const RegisterPage = () => {
             </button>
           </div>
         </form>
+
+        {/* Divider */}
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-neutral dark:border-gray-600" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white dark:bg-gray-800 text-earth dark:text-gray-400">Or register with</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Google Sign In */}
+        <div className="mt-6">
+          <GoogleSignInButton
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            text="signup"
+            disabled={isLoading}
+          />
+          <p className="mt-2 text-xs text-earth dark:text-gray-400 text-center">
+            New Google users are automatically registered as <span className="font-medium">Students</span>
+          </p>
+        </div>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-earth dark:text-gray-400">

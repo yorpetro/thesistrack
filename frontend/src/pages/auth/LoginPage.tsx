@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import ThemeToggle from '../../components/common/ThemeToggle';
+import GoogleSignInButton from '../../components/auth/GoogleSignInButton';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isLoading, error } = useAuthStore();
+  const { login, loginWithGoogle, isLoading, error } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
 
   const from = location.state?.from || '/';
 
@@ -21,6 +23,19 @@ const LoginPage = () => {
     } catch (err) {
       // Error is handled in the auth store
     }
+  };
+
+  const handleGoogleSuccess = async (credential: string) => {
+    try {
+      await loginWithGoogle(credential);
+      navigate(from, { replace: true });
+    } catch (err) {
+      // Error is handled in the auth store
+    }
+  };
+
+  const handleGoogleError = (error: any) => {
+    console.error('Google Sign-In error:', error);
   };
 
   return (
@@ -107,6 +122,28 @@ const LoginPage = () => {
           </div>
         </form>
 
+        {/* Divider */}
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-neutral dark:border-gray-600" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white dark:bg-gray-800 text-earth dark:text-gray-400">Or continue with</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Google Sign In */}
+        <div className="mt-6">
+          <GoogleSignInButton
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            text="signin"
+            disabled={isLoading}
+          />
+        </div>
+
         <div className="mt-6 text-center">
           <p className="text-sm text-earth dark:text-gray-400">
             Don't have an account?{' '}
@@ -122,6 +159,8 @@ const LoginPage = () => {
           © {new Date().getFullYear()} ThesisTrack. All rights reserved.
         </p>
       </div>
+
+
     </div>
   );
 };
