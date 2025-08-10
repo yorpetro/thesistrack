@@ -8,6 +8,7 @@ import { GraduationAssistant, Thesis, ThesisRequest } from '../../../types';
 import { useAuthStore } from '../../../stores/authStore';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import RequestDisclaimer from '../../../components/RequestDisclaimer'; // Assuming RequestDisclaimer is in components/ root
+import ProfilePicture from '../../../components/common/ProfilePicture';
 
 // Rename component to match file name
 const AssistantSelectionForm = () => {
@@ -246,9 +247,11 @@ const AssistantSelectionForm = () => {
                 >
                   <div className="p-6">
                     <div className="flex items-center justify-center mb-4">
-                      <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
-                        {assistant.full_name ? assistant.full_name.charAt(0).toUpperCase() : 'GA'}
-                      </div>
+                      <ProfilePicture 
+                        profilePicture={assistant.profile_picture}
+                        alt={assistant.full_name || 'Graduation Assistant'}
+                        size="xl"
+                      />
                     </div>
                     <h3 className="text-lg font-semibold text-center mb-2">{assistant.full_name}</h3>
                     <p className="text-sm text-gray-500 text-center mb-4">{assistant.email}</p>

@@ -63,7 +63,7 @@ const ThesisReviewAssistantActions: React.FC<Props> = ({ thesis, user, onReviewS
     }
   };
 
-  if (user.role !== 'graduation_assistant') return null;
+  if (user.role !== 'graduation_assistant' || user.id !== thesis.supervisor_id) return null;
   console.log(user);
   return (
     <>

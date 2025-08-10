@@ -4,6 +4,7 @@ export interface Deadline {
   id: string;
   title: string;
   description?: string;
+  location?: string;  // Location for defense deadlines
   deadline_date: string;
   deadline_type: DeadlineType;
   is_active: boolean;
@@ -20,6 +21,7 @@ export interface DeadlineDetail extends Deadline {
 export interface DeadlineCreate {
   title: string;
   description?: string;
+  location?: string;  // Location for defense deadlines
   deadline_date: string;
   deadline_type: DeadlineType;
   is_active: boolean;
@@ -29,6 +31,7 @@ export interface DeadlineCreate {
 export interface DeadlineUpdate {
   title?: string;
   description?: string;
+  location?: string;  // Location for defense deadlines
   deadline_date?: string;
   deadline_type?: DeadlineType;
   is_active?: boolean;

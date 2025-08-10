@@ -10,6 +10,8 @@ import AssistantHome from './features/home/AssistantHome';
 import ProfessorHome from './features/home/ProfessorHome';
 import ThesisPage from './features/thesis/ThesisPage';
 import ThesisListPage from './features/thesis/ThesisListPage';
+import AllThesesList from './pages/thesis/AllThesesList';
+import ProfileSettings from './pages/ProfileSettings';
 import SetDeadlines from './features/admin/SetDeadlines';
 import AssistantSelectionForm from './features/thesis/components/AssistantSelectionForm';
 
@@ -53,10 +55,12 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<ProtectedRoute><HomeSelector /></ProtectedRoute>} />
         <Route path="theses" element={<ProtectedRoute><ThesisListPage /></ProtectedRoute>} />
+        <Route path="theses/all" element={<ProtectedRoute><AllThesesList /></ProtectedRoute>} />
         <Route path="theses/new" element={<ProtectedRoute><NewThesis /></ProtectedRoute>} />
         <Route path="theses/:id" element={<ProtectedRoute><ThesisPage /></ProtectedRoute>} />
         <Route path="theses/:thesisId/upload" element={<ProtectedRoute><UploadDocumentPage /></ProtectedRoute>} />
         <Route path="select-assistant" element={<ProtectedRoute><AssistantSelectionForm /></ProtectedRoute>} />
+        <Route path="profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
         <Route path="admin/set-deadlines" element={<ProtectedRoute><SetDeadlines /></ProtectedRoute>} />
       </Route>
     </Routes>

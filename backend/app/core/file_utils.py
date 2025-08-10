@@ -19,6 +19,15 @@ ALLOWED_EXTENSIONS = {
     'txt': 'text/plain',
 }
 
+# Define allowed image extensions for profile pictures
+ALLOWED_IMAGE_EXTENSIONS = {
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg', 
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'webp': 'image/webp',
+}
+
 # Base upload directory
 UPLOAD_DIR = Path('/app/uploads')
 
@@ -59,6 +68,44 @@ def validate_file_type(filename: str) -> bool:
     """
     ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
     return ext in ALLOWED_EXTENSIONS
+
+def validate_image_type(filename: str) -> bool:
+    """
+    Validate if the image file type is allowed for profile pictures.
+    """
+    ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+    return ext in ALLOWED_IMAGE_EXTENSIONS
+
+async def save_profile_picture(upload_file: UploadFile, user_id: str) -> Tuple[str, str, int]:
+    """
+    Save a profile picture to the appropriate directory.
+    Returns the file path, mimetype, and size.
+    """
+    # Create directory structure if it doesn't exist
+    profile_dir = UPLOAD_DIR / 'profiles'
+    profile_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Generate a unique filename to prevent collisions
+    filename = upload_file.filename
+    base_name, extension = os.path.splitext(filename)
+    unique_filename = f"{user_id}_profile_{uuid.uuid4().hex}{extension}"
+    file_path = profile_dir / unique_filename
+    
+    # Save the file
+    with open(file_path, "wb") as buffer:
+        content = await upload_file.read()
+        buffer.write(content)
+        file_size = len(content)
+    
+    # Determine mimetype
+    mimetype, _ = mimetypes.guess_type(filename)
+    if not mimetype:
+        # Default to binary if type can't be determined
+        mimetype = "application/octet-stream"
+    
+    # Return the relative path from the upload directory
+    relative_path = str(file_path.relative_to(UPLOAD_DIR))
+    return relative_path, mimetype, file_size
 
 def delete_file(file_path: str) -> bool:
     """

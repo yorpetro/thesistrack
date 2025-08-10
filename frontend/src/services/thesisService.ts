@@ -14,6 +14,16 @@ export const getTheses = async (supervisorId?: string): Promise<Thesis[]> => {
   }
 };
 
+export const getAllThesesForProfessors = async (): Promise<ThesisWithRelations[]> => {
+  try {
+    const response = await api.get('/theses/all');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching all theses for professors:', error);
+    throw error;
+  }
+};
+
 export const getThesis = async (id: string): Promise<ThesisWithRelations> => {
   try {
     const response = await api.get(`/theses/${id}`);

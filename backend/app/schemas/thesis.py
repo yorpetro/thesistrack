@@ -64,6 +64,7 @@ class UserSimple(BaseModel):
     email: str
     full_name: Optional[str] = None
     role: str
+    profile_picture: Optional[str] = None
 
     class Config:
         orm_mode = True

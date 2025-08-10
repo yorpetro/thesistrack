@@ -10,6 +10,7 @@ class UserBase(BaseModel):
     full_name: Optional[str] = None
     role: UserRole
     bio: Optional[str] = None
+    profile_picture: Optional[str] = None
 
 
 # Properties to receive via API on creation
@@ -19,12 +20,9 @@ class UserCreate(UserBase):
 
 # Properties to receive via API on update
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr] = None
     full_name: Optional[str] = None
-    password: Optional[str] = None
     bio: Optional[str] = None
-    is_active: Optional[bool] = None
-    role: Optional[UserRole] = None
+    profile_picture: Optional[str] = None
 
 
 # Properties shared by models stored in DB

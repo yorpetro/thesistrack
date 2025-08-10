@@ -164,17 +164,17 @@ const ProfessorHome: React.FC = () => {
             {/* View All Theses Card */}
             <div className="bg-green-50 rounded-lg p-6 shadow-sm">
               <DocumentTextIcon className="h-10 w-10 text-green-600 mb-4" />
-              <h2 className="text-lg font-medium text-gray-900 mb-2">All Theses</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-2">All Theses Overview</h2>
               <p className="text-gray-600 mb-4">
-                Browse and manage all thesis submissions across the system.
+                Monitor thesis statuses across all students to help with deadline planning decisions.
               </p>
               <Link
-                to="/theses"
+                to="/theses/all"
                 className="text-green-600 hover:text-green-700 font-medium flex items-center"
                 tabIndex={0}
-                aria-label="View all theses"
+                aria-label="View all theses overview"
               >
-                View Theses
+                View All Theses
                 <svg className="ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"

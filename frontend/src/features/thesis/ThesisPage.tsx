@@ -10,6 +10,7 @@ import { ArrowLeftIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import Modal from '../../components/common/Modal';
 import Textarea from '../../components/common/Textarea';
 import Select from '../../components/common/Select';
+import ProfilePicture from '../../components/common/ProfilePicture';
 
 const statusColors: Record<ThesisStatus, { bg: string; text: string }> = {
   draft: { bg: 'bg-gray-100', text: 'text-gray-800' },
@@ -188,14 +189,17 @@ const ThesisPage = () => {
           </div>
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-neutral-light flex items-center justify-center">
-                <UserCircleIcon className="h-5 w-5 text-secondary" />
-              </div>
+              <ProfilePicture 
+                profilePicture={thesis.supervisor.profile_picture}
+                alt={thesis.supervisor.full_name || 'Supervisor'}
+                size="md"
+              />
               <span className="text-secondary font-medium">
                 {thesis.supervisor.full_name || 'N/A'}
               </span>
             </div>
-            {(user?.role === 'graduation_assistant' || user?.role === 'professor') && (
+            {(user?.role === 'graduation_assistant' || user?.role === 'professor') && 
+             user?.id === thesis.supervisor_id && (
               <button
                 onClick={handleOpenReviewModal}
                 className="btn-secondary"
@@ -207,7 +211,13 @@ const ThesisPage = () => {
         </div>
       )}
 
-      {user?.role !== 'graduation_assistant' && <ThesisFileManager thesisId={thesis.id} />}
+      {user?.role !== 'graduation_assistant' && (
+        <ThesisFileManager 
+          thesisId={thesis.id} 
+          currentUser={user}
+          thesis={thesis}
+        />
+      )}
 
       <CommentSection
         thesisId={thesis.id}

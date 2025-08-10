@@ -18,6 +18,7 @@ class Deadline(Base):
     id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     title = Column(String, nullable=False)
     description = Column(Text, nullable=True)
+    location = Column(String, nullable=True)  # Location for defense deadlines
     
     # Deadline information
     deadline_date = Column(DateTime, nullable=False)

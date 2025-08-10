@@ -1,5 +1,5 @@
 import api from './api';
-import { GraduationAssistant, UserSimple } from '../types';
+import { GraduationAssistant, UserSimple, User } from '../types';
 
 /**
  * Fetch users with optional role filter
@@ -58,6 +58,68 @@ export const getUserById = async (userId: string): Promise<UserSimple> => {
     return response.data;
   } catch (error) {
     console.error(`Error fetching user ${userId}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Get current user profile
+ */
+export const getCurrentUser = async (): Promise<User> => {
+  try {
+    const response = await api.get('/users/me');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching current user:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update current user profile
+ */
+export const updateCurrentUser = async (userData: {
+  full_name?: string;
+  bio?: string;
+}): Promise<User> => {
+  try {
+    const response = await api.put('/users/me', userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    throw error;
+  }
+};
+
+/**
+ * Upload profile picture
+ */
+export const uploadProfilePicture = async (file: File): Promise<User> => {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await api.post('/users/me/profile-picture', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading profile picture:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete profile picture
+ */
+export const deleteProfilePicture = async (): Promise<User> => {
+  try {
+    const response = await api.delete('/users/me/profile-picture');
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting profile picture:', error);
     throw error;
   }
 }; 

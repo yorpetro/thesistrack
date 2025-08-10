@@ -6,6 +6,7 @@ export interface User {
   is_active: boolean;
   is_superuser: boolean;
   created_at: string;
+  profile_picture?: string | null;
 }
 
 export interface AuthUser {
@@ -13,6 +14,7 @@ export interface AuthUser {
   email: string;
   full_name: string;
   role: 'student' | 'professor' | 'graduation_assistant';
+  profile_picture?: string | null;
 }
 
 export interface UserSimple {
@@ -20,6 +22,7 @@ export interface UserSimple {
   email: string;
   full_name: string | null;
   role: string;
+  profile_picture?: string | null;
 }
 
 export interface GraduationAssistant extends UserSimple {
@@ -119,6 +122,7 @@ export interface ThesisComment {
     email: string;
     full_name: string | null;
     role: string;
+    profile_picture?: string | null;
   };
   replies?: ThesisComment[];
 }

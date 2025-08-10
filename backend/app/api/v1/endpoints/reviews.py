@@ -33,8 +33,12 @@ def create_thesis_review(
     
     # Role check is handled by the get_current_reviewer dependency
 
-    # Optional: Add more specific authorization checks if needed, 
-    # e.g., is the reviewer (professor/assistant) assigned to this thesis or student?
+    # Check if the current user is the assigned reviewer for this thesis
+    if thesis.supervisor_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You can only review theses that are assigned to you",
+        )
 
     # Generate the title
     review_title = f"{current_user.full_name} review"

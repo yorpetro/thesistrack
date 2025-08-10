@@ -17,6 +17,29 @@ from app.schemas.thesis import (
 
 router = APIRouter()
 
+@router.get("/all", response_model=List[ThesisDetail])
+async def read_all_theses_for_professors(
+    db: DB,
+    current_user: CurrentActiveUser,
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    """
+    Retrieve all theses with their details for professors to view all thesis statuses.
+    Only accessible by professors and graduation assistants.
+    """
+    # Only professors and graduation assistants can access this endpoint
+    if current_user.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+        raise HTTPException(
+            status_code=403,
+            detail="Only professors and graduation assistants can view all theses",
+        )
+    
+    # Get all theses with their relationships
+    theses = db.query(Thesis).offset(skip).limit(limit).all()
+    
+    return theses
+
 @router.get("/", response_model=List[ThesisSchema])
 async def read_theses(
     db: DB,

@@ -6,12 +6,15 @@ import {
   UserIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
-  XMarkIcon
+  XMarkIcon,
+  Cog6ToothIcon,
+  ChevronDownIcon
 } from '@heroicons/react/24/outline';
 import { useAuthStore } from '../../stores/authStore';
 import { useState, useEffect } from 'react';
 import { getTheses } from '../../services/thesisService';
 import { Thesis } from '../../types';
+import ProfilePicture from '../common/ProfilePicture';
 
 const Layout = () => {
   const location = useLocation();
@@ -21,6 +24,7 @@ const Layout = () => {
   const [scrolled, setScrolled] = useState(false);
   const [studentThesis, setStudentThesis] = useState<Thesis | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   // Handle scrolling effect for navbar
   useEffect(() => {
@@ -30,6 +34,18 @@ const Layout = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Handle click outside to close user menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (userMenuOpen && !target.closest('.user-menu')) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [userMenuOpen]);
 
   // Fetch student thesis and check if graduation assistant is selected
   useEffect(() => {
@@ -86,6 +102,9 @@ const Layout = () => {
           icon: DocumentTextIcon 
         });
       }
+    } else if (user?.role === 'professor') {
+      links.push({ name: 'Review', href: '/theses', icon: DocumentTextIcon });
+      links.push({ name: 'Control Panel', href: '/theses/all', icon: DocumentTextIcon });
     } else {
       links.push({ name: 'Theses', href: '/theses', icon: DocumentTextIcon });
     }
@@ -98,6 +117,10 @@ const Layout = () => {
   const isActive = (path: string) => {
     if (path === '/') {
       return location.pathname === '/';
+    }
+    // For exact matching of thesis routes to avoid conflicts
+    if (path === '/theses' && location.pathname.startsWith('/theses/')) {
+      return location.pathname === '/theses';
     }
     return location.pathname.startsWith(path);
   };
@@ -152,21 +175,45 @@ const Layout = () => {
             
             {/* User profile section */}
             <div className="hidden md:flex md:items-center">
-              <div className="relative ml-3 flex items-center space-x-4">
-                <div className="flex items-center space-x-2 px-3 py-1 rounded-custom bg-neutral">
-                  <div className="rounded-full bg-secondary p-1 text-white">
-                    <UserIcon className="h-5 w-5" />
-                  </div>
+              <div className="relative ml-3 user-menu">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-custom bg-neutral hover:bg-gray-100 transition-colors duration-200 focus:outline-none"
+                >
+                  <ProfilePicture 
+                    profilePicture={user?.profile_picture}
+                    alt={user?.full_name || user?.email || 'User'}
+                    size="sm"
+                  />
                   <span className="text-sm font-medium text-secondary">
                     {user?.full_name || user?.email || 'User'}
                   </span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="rounded-custom bg-white p-2 text-secondary hover:text-accent hover:bg-neutral transition-colors duration-200 focus:outline-none shadow-custom"
-                >
-                  <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                  <ChevronDownIcon className="h-4 w-4 text-gray-400" />
                 </button>
+
+                {/* Dropdown menu */}
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border">
+                    <Link
+                      to="/profile"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <Cog6ToothIcon className="h-4 w-4 mr-2" />
+                      Profile Settings
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        handleLogout();
+                      }}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <ArrowRightOnRectangleIcon className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -194,6 +241,14 @@ const Layout = () => {
               <div className="px-3 py-2 text-sm text-secondary">
                 Signed in as: <span className="font-medium">{user?.full_name || user?.email || 'User'}</span>
               </div>
+              <Link
+                to="/profile"
+                className="block px-3 py-2 rounded-md text-base font-medium flex items-center text-secondary hover:bg-neutral"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Cog6ToothIcon className="mr-2 h-5 w-5" />
+                Profile Settings
+              </Link>
               <button
                 onClick={() => {
                   handleLogout();

@@ -1,9 +1,12 @@
 from typing import Any, List, Optional
 from sqlalchemy import func
 
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, UploadFile, File
+from fastapi.responses import FileResponse
+from pathlib import Path
 
 from app.core.deps import DB, CurrentUser, CurrentActiveUser
+from app.core.file_utils import save_profile_picture, validate_image_type, delete_file, UPLOAD_DIR
 from app.models.user import User, UserRole
 from app.models.thesis import Thesis
 from app.schemas.user import User as UserSchema, UserUpdate
@@ -26,24 +29,10 @@ async def update_user_me(
     db: DB,
 ) -> Any:
     """
-    Update own user.
+    Update own user profile (name and bio only).
     """
-    # Check for email uniqueness if trying to change
-    if user_in.email and user_in.email != current_user.email:
-        user = db.query(User).filter(User.email == user_in.email).first()
-        if user:
-            raise HTTPException(
-                status_code=400,
-                detail="Email already registered",
-            )
-    
     # Update user attributes
     user_data = user_in.dict(exclude_unset=True)
-    
-    # Handle password update
-    if "password" in user_data:
-        from app.core.security import get_password_hash
-        user_data["hashed_password"] = get_password_hash(user_data.pop("password"))
     
     for field, value in user_data.items():
         setattr(current_user, field, value)
@@ -53,6 +42,102 @@ async def update_user_me(
     db.refresh(current_user)
     
     return current_user
+
+@router.post("/me/profile-picture", response_model=UserSchema)
+async def upload_profile_picture(
+    file: UploadFile = File(...),
+    current_user: CurrentActiveUser = CurrentActiveUser,
+    db: DB = DB,
+) -> Any:
+    """
+    Upload profile picture for current user.
+    """
+    # Validate file type
+    if not validate_image_type(file.filename):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid file type. Only JPG, PNG, GIF, and WebP images are allowed.",
+        )
+    
+    # Validate file size (max 5MB)
+    file_content = await file.read()
+    if len(file_content) > 5 * 1024 * 1024:  # 5MB
+        raise HTTPException(
+            status_code=400,
+            detail="File size too large. Maximum size is 5MB.",
+        )
+    
+    # Reset file pointer
+    await file.seek(0)
+    
+    # Delete old profile picture if it exists
+    if current_user.profile_picture:
+        delete_file(current_user.profile_picture)
+    
+    # Save new profile picture
+    try:
+        file_path, mimetype, file_size = await save_profile_picture(file, current_user.id)
+        
+        # Update user profile picture path
+        current_user.profile_picture = file_path
+        db.add(current_user)
+        db.commit()
+        db.refresh(current_user)
+        
+        return current_user
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to upload profile picture: {str(e)}",
+        )
+
+@router.delete("/me/profile-picture", response_model=UserSchema)
+async def delete_profile_picture(
+    current_user: CurrentActiveUser = CurrentActiveUser,
+    db: DB = DB,
+) -> Any:
+    """
+    Delete profile picture for current user.
+    """
+    if current_user.profile_picture:
+        # Delete file from filesystem
+        delete_file(current_user.profile_picture)
+        
+        # Update user profile picture path
+        current_user.profile_picture = None
+        db.add(current_user)
+        db.commit()
+        db.refresh(current_user)
+    
+    return current_user
+
+@router.get("/profile-picture/{file_path:path}")
+async def serve_profile_picture(file_path: str) -> FileResponse:
+    """
+    Serve profile picture files.
+    """
+    # Construct the full file path
+    full_path = UPLOAD_DIR / file_path
+    
+    # Check if file exists
+    if not full_path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Profile picture not found",
+        )
+    
+    # Check if it's in the profiles directory (security check)
+    if not str(full_path).startswith(str(UPLOAD_DIR / "profiles")):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied",
+        )
+    
+    return FileResponse(
+        path=full_path,
+        media_type="image/jpeg",  # Will be auto-detected by browser
+        headers={"Cache-Control": "public, max-age=3600"}  # Cache for 1 hour
+    )
 
 @router.get("/{user_id}", response_model=UserSchema)
 async def read_user(

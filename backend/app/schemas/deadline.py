@@ -7,6 +7,7 @@ from app.models.deadline import DeadlineType
 class DeadlineBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = None
+    location: Optional[str] = Field(None, max_length=500)  # Location for defense deadlines
     deadline_date: datetime
     deadline_type: DeadlineType
     is_active: bool = True
@@ -20,6 +21,7 @@ class DeadlineCreate(DeadlineBase):
 class DeadlineUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     description: Optional[str] = None
+    location: Optional[str] = Field(None, max_length=500)  # Location for defense deadlines
     deadline_date: Optional[datetime] = None
     deadline_type: Optional[DeadlineType] = None
     is_active: Optional[bool] = None

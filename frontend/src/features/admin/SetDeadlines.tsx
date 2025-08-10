@@ -12,6 +12,7 @@ const SetDeadlines: React.FC = () => {
   const [formData, setFormData] = useState<DeadlineCreate>({
     title: '',
     description: '',
+    location: '',
     deadline_date: '',
     deadline_type: 'defense' as DeadlineType,
     is_active: true,
@@ -57,6 +58,7 @@ const SetDeadlines: React.FC = () => {
       setFormData({
         title: '',
         description: '',
+        location: '',
         deadline_date: '',
         deadline_type: 'defense' as DeadlineType,
         is_active: true,
@@ -147,6 +149,23 @@ const SetDeadlines: React.FC = () => {
               placeholder="e.g., Spring 2025 Thesis Defense"
               required
             />
+          </div>
+
+          <div>
+            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+              Defense Location
+            </label>
+            <input
+              type="text"
+              id="location"
+              value={formData.location}
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g., Room 101, Building A"
+            />
+            <p className="mt-1 text-sm text-gray-500">
+              Location where the defense will take place
+            </p>
           </div>
 
           <div>
@@ -242,6 +261,16 @@ const SetDeadlines: React.FC = () => {
                   <p className="text-gray-600 mb-2">
                     <strong>Due:</strong> {formatDate(deadline.deadline_date)}
                   </p>
+                  
+                  {deadline.deadline_type === 'defense' && deadline.location && (
+                    <p className="text-gray-600 mb-2 flex items-center text-sm">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <strong>Location:</strong> {deadline.location}
+                    </p>
+                  )}
                   
                   {deadline.description && (
                     <p className="text-gray-600 text-sm">{deadline.description}</p>

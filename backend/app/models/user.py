@@ -25,6 +25,7 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     bio = Column(Text, nullable=True)
+    profile_picture = Column(String, nullable=True)  # Path to profile picture file
     
     # OAuth related fields
     oauth_provider = Column(String, nullable=True)  # "google", "github", etc.

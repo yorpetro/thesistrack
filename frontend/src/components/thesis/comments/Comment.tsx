@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { ThesisComment, AuthUser } from '../../../types';
 import CommentForm from './CommentForm';
+import ProfilePicture from '../../common/ProfilePicture';
 
 interface CommentProps {
   comment: ThesisComment;
@@ -62,10 +63,12 @@ const Comment = ({
       {/* Comment Header */}
       <div className="flex items-center justify-between p-4 bg-neutral/5">
         <div className="flex items-center">
-          <div className="w-6 h-6 rounded-full bg-neutral mr-2 overflow-hidden">
-            <div className="w-full h-full flex items-center justify-center text-white text-xs font-bold">
-              {(comment.user?.full_name || comment.user?.email || 'U').charAt(0).toUpperCase()}
-            </div>
+          <div className="mr-2">
+            <ProfilePicture 
+              profilePicture={comment.user?.profile_picture}
+              alt={comment.user?.full_name || comment.user?.email || 'User'}
+              size="sm"
+            />
           </div>
           <span className="text-sm font-medium text-secondary">
             {comment.user?.full_name || comment.user?.email || 'Unknown user'}

@@ -15,6 +15,7 @@ interface AuthState {
   logout: () => void;
   checkAuth: () => Promise<void>;
   checkBackendHealth: () => Promise<boolean>;
+  updateUser: (user: AuthUser) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -180,6 +181,10 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false 
           });
         }
+      },
+
+      updateUser: (user: AuthUser) => {
+        set({ user });
       }
     }),
     {

@@ -115,6 +115,7 @@ async def create_deadline(
         defense_deadline = Deadline(
             title=deadline_in.title,
             description=deadline_in.description,
+            location=deadline_in.location,  # Location is only relevant for defense deadlines
             deadline_date=defense_date,
             deadline_type=DeadlineType.DEFENSE,
             is_active=deadline_in.is_active,
