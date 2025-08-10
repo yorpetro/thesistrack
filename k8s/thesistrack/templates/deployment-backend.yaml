@@ -17,17 +17,11 @@ spec:
           image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}
           ports:
             - containerPort: {{ .Values.backend.port }}
-          env:
-            - name: POSTGRES_SERVER
-              value: {{ .Values.backend.env.POSTGRES_SERVER | quote }}
-            - name: POSTGRES_USER
-              value: {{ .Values.backend.env.POSTGRES_USER | quote }}
-            - name: POSTGRES_PASSWORD
-              value: {{ .Values.backend.env.POSTGRES_PASSWORD | quote }}
-            - name: POSTGRES_DB
-              value: {{ .Values.backend.env.POSTGRES_DB | quote }}
-            - name: ENVIRONMENT
-              value: {{ .Values.backend.env.ENVIRONMENT | quote }}
+          envFrom:
+            - configMapRef:
+                name: thesistrack-config
+            - secretRef:
+                name: thesistrack-secrets
           resources:
             requests:
               cpu: "100m"

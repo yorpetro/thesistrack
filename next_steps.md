@@ -5,7 +5,7 @@
 3. ✅ (Update main page) Add location to defense deadline.
 4. ✅ Dark mode
 5. ✅ Google authentication
-6. Fix errors in AKS, and add domain 'ypetrov.me'
+6. ✅ Verify and configure AKS, add domain 'thesistrack.dev', configure google secrets for login
 
 Optional:
 - (email verification when registration)

@@ -17,9 +17,9 @@ spec:
           image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
           ports:
             - containerPort: {{ .Values.frontend.port }}
-          env:
-            - name: VITE_API_URL
-              value: {{ .Values.frontend.env.VITE_API_URL | quote }}
+          envFrom:
+            - configMapRef:
+                name: thesistrack-config
           resources:
             requests:
               cpu: "100m"
