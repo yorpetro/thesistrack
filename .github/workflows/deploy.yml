@@ -82,6 +82,25 @@ jobs:
         echo "Waiting for NGINX Ingress Controller to be ready..."
         kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx --timeout=300s || true
     
+    - name: Clean up existing resources
+      run: |
+        echo "Cleaning up any existing resources that might conflict with Helm..."
+        
+        # Delete any existing ClusterIssuer
+        kubectl delete clusterissuer letsencrypt-prod --ignore-not-found=true || true
+        
+        # Delete any existing application resources
+        kubectl delete secret thesistrack-secrets --ignore-not-found=true || true
+        kubectl delete configmap thesistrack-config --ignore-not-found=true || true
+        kubectl delete service backend frontend postgres --ignore-not-found=true || true
+        kubectl delete deployment backend frontend postgres --ignore-not-found=true || true
+        kubectl delete ingress thesistrack-ingress --ignore-not-found=true || true
+        
+        # Wait a moment for cleanup to complete
+        sleep 10
+        
+        echo "Cleanup completed"
+    
     - name: Deploy to AKS
       run: |
         echo "Deploying to AKS with Helm..."
