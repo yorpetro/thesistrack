@@ -68,6 +68,20 @@ jobs:
       run: |
         az aks get-credentials --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --overwrite-existing
     
+    - name: Install required infrastructure
+      run: |
+        echo "Installing cert-manager..."
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
+        
+        echo "Installing NGINX Ingress Controller..."
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+        
+        echo "Waiting for cert-manager to be ready..."
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=cert-manager -n cert-manager --timeout=300s || true
+        
+        echo "Waiting for NGINX Ingress Controller to be ready..."
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx --timeout=300s || true
+    
     - name: Deploy to AKS
       run: |
         echo "Deploying to AKS with Helm..."
