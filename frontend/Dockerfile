@@ -14,5 +14,14 @@ COPY . .
 # Expose the port
 EXPOSE 5173
 
-# Start the application in development mode
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Build the application for production
+RUN npm run build
+
+# Install a simple HTTP server
+RUN npm install -g serve
+
+# Expose the port
+EXPOSE 5173
+
+# Start the production server
+CMD ["serve", "-s", "dist", "-l", "5173"]

@@ -13,7 +13,17 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-VALUES_FILE="thesistrack/values.yaml"
+# Try to find values.yaml in different possible locations
+if [ -f "thesistrack/values.yaml" ]; then
+    VALUES_FILE="thesistrack/values.yaml"
+elif [ -f "../k8s/thesistrack/values.yaml" ]; then
+    VALUES_FILE="../k8s/thesistrack/values.yaml"
+elif [ -f "k8s/thesistrack/values.yaml" ]; then
+    VALUES_FILE="k8s/thesistrack/values.yaml"
+else
+    echo -e "${RED}❌ values.yaml not found. Please run this script from the project root directory.${NC}"
+    exit 1
+fi
 
 echo -e "${BLUE}This script will help you configure ThesisTrack for deployment.${NC}"
 echo ""
