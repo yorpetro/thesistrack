@@ -14,7 +14,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
   size = 'md', 
   className = '' 
 }) => {
-  const getProfileImageUrl = (profilePicture: string | null) => {
+  const getProfileImageUrl = (profilePicture: string | null): string | null => {
     if (!profilePicture) return null;
     return `http://localhost:8000/api/v1/users/profile-picture/${profilePicture}`;
   };

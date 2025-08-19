@@ -1,12 +1,12 @@
 import api from './api';
-import { AttachmentBase, PreviewData } from '../types';
+import { Attachment, PreviewData } from '../types';
 
-export const getAttachments = async (thesisId: string): Promise<AttachmentBase[]> => {
+export const getAttachments = async (thesisId: string): Promise<Attachment[]> => {
   const response = await api.get(`/theses/${thesisId}/attachments`);
   return response.data;
 };
 
-export const getAttachment = async (thesisId: string, attachmentId: string): Promise<AttachmentBase> => {
+export const getAttachment = async (thesisId: string, attachmentId: string): Promise<Attachment> => {
   const response = await api.get(`/theses/${thesisId}/attachments/${attachmentId}`);
   return response.data;
 };
@@ -15,7 +15,7 @@ export const uploadAttachment = async (
   thesisId: string,
   file: File,
   description?: string
-): Promise<AttachmentBase> => {
+): Promise<Attachment> => {
   const formData = new FormData();
   formData.append('file', file);
   
@@ -36,7 +36,7 @@ export const updateAttachment = async (
   thesisId: string,
   attachmentId: string,
   data: { filename?: string; description?: string }
-): Promise<AttachmentBase> => {
+): Promise<Attachment> => {
   const response = await api.put(`/theses/${thesisId}/attachments/${attachmentId}`, data);
   return response.data;
 };
@@ -49,7 +49,7 @@ export const replaceAttachment = async (
   thesisId: string,
   attachmentId: string,
   file: File
-): Promise<AttachmentBase> => {
+): Promise<Attachment> => {
   const formData = new FormData();
   formData.append('file', file);
   

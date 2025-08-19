@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -31,7 +31,7 @@ const FileUploader = ({ thesisId, onSuccess }: FileUploaderProps) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FileFormData>({
     resolver: zodResolver(fileSchema)
@@ -77,9 +77,6 @@ const FileUploader = ({ thesisId, onSuccess }: FileUploaderProps) => {
     setSelectedFile(null);
     setError(null);
     reset();
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
   };
   
   return (
@@ -124,7 +121,6 @@ const FileUploader = ({ thesisId, onSuccess }: FileUploaderProps) => {
               type="file" 
               className="hidden"
               accept=".pdf,.doc,.docx,.txt"
-              ref={fileInputRef}
               {...register("file", {
                 onChange: handleFileChange
               })}

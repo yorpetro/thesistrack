@@ -218,11 +218,13 @@ const Calendar: React.FC = () => {
                     {deadline.title}
                   </p>
                   <p className="text-xs text-red-600 dark:text-red-400">
-                    {deadline.days_remaining !== null && deadline.days_remaining <= 0 
+                    {deadline.days_remaining !== null && deadline.days_remaining !== undefined && deadline.days_remaining <= 0 
                       ? 'OVERDUE' 
                       : deadline.days_remaining === 1 
                       ? 'DUE TOMORROW'
-                      : `${deadline.days_remaining} DAYS LEFT`
+                      : deadline.days_remaining !== null && deadline.days_remaining !== undefined
+                      ? `${deadline.days_remaining} DAYS LEFT`
+                      : 'DUE DATE UNKNOWN'
                     }
                   </p>
                 </div>
@@ -236,9 +238,9 @@ const Calendar: React.FC = () => {
         <div 
           key={deadline.id} 
           className={`rounded-lg p-3 border-l-4 ${
-            deadline.days_remaining !== null && deadline.days_remaining <= 3 
+            deadline.days_remaining !== null && deadline.days_remaining !== undefined && deadline.days_remaining <= 3 
               ? 'border-l-red-500 bg-red-50 dark:bg-red-900/20' 
-              : deadline.days_remaining !== null && deadline.days_remaining <= 7
+              : deadline.days_remaining !== null && deadline.days_remaining !== undefined && deadline.days_remaining <= 7
               ? 'border-l-orange-500 bg-orange-50 dark:bg-orange-900/20'
               : 'border-l-gray-300 dark:border-l-gray-600 bg-gray-50 dark:bg-gray-800'
           }`}

@@ -78,11 +78,11 @@ const AttachmentList = ({
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const getFileIcon = (fileType: string) => {
-    if (fileType.includes('pdf')) {
+  const getFileIcon = (contentType: string) => {
+    if (contentType.includes('pdf')) {
       return <DocumentTextIcon className="h-5 w-5 text-red-500 dark:text-red-400" />;
     }
-    if (fileType.includes('doc')) {
+    if (contentType.includes('doc')) {
       return <DocumentTextIcon className="h-5 w-5 text-blue-500 dark:text-blue-400" />;
     }
     return <DocumentIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />;
@@ -112,7 +112,7 @@ const AttachmentList = ({
             role="button"
           >
             <div className="flex-shrink-0 mr-3">
-              {getFileIcon(attachment.file_type)}
+              {getFileIcon(attachment.content_type)}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
@@ -121,7 +121,7 @@ const AttachmentList = ({
                 </p>
                 <div className="ml-4 flex-shrink-0 flex items-center space-x-4">
                   <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                    {formatFileSize(attachment.file_size)}
+                    {formatFileSize(attachment.size)}
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
                     {formatDate(attachment.updated_at)}

@@ -40,7 +40,7 @@ const ProfileSettings = () => {
         setUser(userData);
         setFormData({
           full_name: userData.full_name || '',
-          bio: userData.bio || ''
+          bio: (userData as any).bio || ''
         });
       } catch (err) {
         setError('Failed to load profile');
@@ -76,7 +76,7 @@ const ProfileSettings = () => {
       setUser(updatedUser);
       
       // Update auth store
-      updateUser(updatedUser);
+      updateUser(updatedUser as any);
       
       setSuccess('Profile updated successfully!');
     } catch (err: any) {
@@ -110,7 +110,7 @@ const ProfileSettings = () => {
       
       const updatedUser = await uploadProfilePicture(file);
       setUser(updatedUser);
-      updateUser(updatedUser);
+      updateUser(updatedUser as any);
       
       setSuccess('Profile picture updated successfully!');
     } catch (err: any) {
@@ -130,7 +130,7 @@ const ProfileSettings = () => {
       
       const updatedUser = await deleteProfilePicture();
       setUser(updatedUser);
-      updateUser(updatedUser);
+      updateUser(updatedUser as any);
       
       setSuccess('Profile picture deleted successfully!');
     } catch (err: any) {

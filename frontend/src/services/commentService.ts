@@ -1,5 +1,5 @@
 import api from './api';
-import { ThesisComment, CommentBase } from '../types';
+import { ThesisComment } from '../types';
 
 export const getThesisComments = async (thesisId: string): Promise<ThesisComment[]> => {
   try {

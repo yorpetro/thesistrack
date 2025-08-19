@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface CommentFormProps {
-  onSubmit: (content: string) => Promise<void>;
+  onSubmit: (content: string, isApproval?: boolean) => Promise<void>;
   onCancel?: () => void;
   isReply?: boolean;
   submitting?: boolean;
@@ -22,7 +22,7 @@ const CommentForm = ({
 
   const handleSubmit = async () => {
     if (!content.trim() || submitting) return;
-    await onSubmit(content);
+    await onSubmit(content, false); // Default to false for isApproval
     setContent('');
   };
 

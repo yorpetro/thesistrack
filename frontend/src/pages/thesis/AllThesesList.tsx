@@ -73,7 +73,7 @@ const AllThesesList = () => {
     
     try {
       setProcessingTheses(prev => [...prev, thesisId]);
-      await updateThesis(thesisId, { status: 'declined' });
+              await updateThesis(thesisId, { status: 'declined' as ThesisStatus });
       
       // Update local state
       setTheses(prev => prev.map(thesis => 
@@ -140,7 +140,7 @@ const AllThesesList = () => {
       const reviewers = users.filter(user => 
         user.role === 'professor' || user.role === 'graduation_assistant'
       );
-      setAvailableReviewers(reviewers);
+              setAvailableReviewers(reviewers as any);
       setReviewerModalOpen(true);
     } catch (error) {
       console.error('Failed to fetch reviewers:', error);
@@ -216,7 +216,7 @@ const AllThesesList = () => {
           ].map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setFilter(tab.key)}
+                              onClick={() => setFilter(tab.key as any)}
               className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
                 filter === tab.key
                   ? 'border-primary text-primary'
@@ -368,7 +368,7 @@ const AllThesesList = () => {
               <option value="">Select a reviewer...</option>
               {availableReviewers.map((reviewer) => (
                 <option key={reviewer.id} value={reviewer.id}>
-                  {reviewer.full_name || reviewer.email} ({reviewer.role})
+                  {reviewer.full_name || reviewer.email} ({(reviewer as any).role})
                 </option>
               ))}
             </select>
