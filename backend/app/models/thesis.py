@@ -8,12 +8,12 @@ from app.db.base_class import Base
 
 
 class ThesisStatus(str, enum.Enum):
-    DRAFT = "draft"
-    SUBMITTED = "submitted"
-    UNDER_REVIEW = "under_review"
-    NEEDS_REVISION = "needs_revision"
-    APPROVED = "approved"
-    DECLINED = "declined"
+    draft = "draft"
+    submitted = "submitted"
+    under_review = "under_review"
+    needs_revision = "needs_revision"
+    approved = "approved"
+    declined = "declined"
 
 
 class Thesis(Base):

@@ -8,10 +8,10 @@ from app.db.base_class import Base
 
 
 class CommitteeMemberRole(str, enum.Enum):
-    CHAIR = "chair"
-    REVIEWER = "reviewer"
-    ADVISOR = "advisor"
-    EXTERNAL = "external"
+    chair = "chair"
+    reviewer = "reviewer"
+    advisor = "advisor"
+    external = "external"
 
 
 class ThesisCommitteeMember(Base):

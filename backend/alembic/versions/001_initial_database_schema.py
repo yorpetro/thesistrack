@@ -42,7 +42,7 @@ def upgrade():
         sa.Column('id', sa.String(), nullable=False),
         sa.Column('title', sa.String(), nullable=False),
         sa.Column('abstract', sa.Text(), nullable=True),
-        sa.Column('status', sa.Enum('draft', 'submitted', 'under_review', 'approved', 'declined', 'revision_required', name='thesisstatus'), nullable=False),
+        sa.Column('status', sa.Enum('draft', 'submitted', 'under_review', 'needs_revision', 'approved', 'declined', name='thesisstatus'), nullable=False),
         sa.Column('student_id', sa.String(), nullable=False),
         sa.Column('supervisor_id', sa.String(), nullable=True),
         sa.Column('assistant_id', sa.String(), nullable=True),

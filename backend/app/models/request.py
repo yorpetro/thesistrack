@@ -8,9 +8,9 @@ from app.db.base_class import Base
 
 
 class RequestStatus(str, enum.Enum):
-    REQUESTED = "requested"
-    ACCEPTED = "accepted"
-    DECLINED = "declined"
+    requested = "requested"
+    accepted = "accepted"
+    declined = "declined"
 
 
 class AssistantRequest(Base):

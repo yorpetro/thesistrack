@@ -8,10 +8,10 @@ from app.db.base_class import Base
 
 
 class DeadlineType(str, enum.Enum):
-    SUBMISSION = "submission"
-    REVIEW = "review"
-    DEFENSE = "defense"
-    REVISION = "revision"
+    submission = "submission"
+    review = "review"
+    defense = "defense"
+    revision = "revision"
 
 
 class Deadline(Base):
