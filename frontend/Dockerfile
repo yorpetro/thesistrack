@@ -11,6 +11,14 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Accept build arguments for environment variables
+ARG VITE_API_URL
+ARG VITE_GOOGLE_CLIENT_ID
+
+# Set environment variables for the build
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+
 # Expose the port
 EXPOSE 5173
 
