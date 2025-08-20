@@ -154,6 +154,22 @@ def upgrade():
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_request_id'), 'request', ['id'], unique=False)
+    
+    # Create deadline table
+    op.create_table('deadline',
+        sa.Column('id', sa.String(), nullable=False),
+        sa.Column('title', sa.String(), nullable=False),
+        sa.Column('description', sa.Text(), nullable=True),
+        sa.Column('location', sa.String(), nullable=True),
+        sa.Column('deadline_date', sa.DateTime(), nullable=False),
+        sa.Column('deadline_type', sa.Enum('SUBMISSION', 'REVIEW', 'DEFENSE', 'REVISION', name='deadlinetype'), nullable=False),
+        sa.Column('is_active', sa.Boolean(), nullable=True),
+        sa.Column('is_global', sa.Boolean(), nullable=True),
+        sa.Column('created_at', sa.DateTime(), nullable=True),
+        sa.Column('updated_at', sa.DateTime(), nullable=True),
+        sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_deadline_id'), 'deadline', ['id'], unique=False)
     # ### end Alembic commands ###
 
 
