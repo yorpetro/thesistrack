@@ -41,5 +41,13 @@ Once the secrets are configured in GitHub, push your changes and the CI/CD pipel
 
 After deployment, you should be able to:
 1. Visit https://thesistrack.dev
-2. See the "Sign in with Google" button enabled
+2. See the "Sign in with Google" button enabled (not showing "disabled")
 3. Successfully authenticate with your Google account
+
+## Troubleshooting
+
+If Google Sign-In is still disabled:
+1. Ensure GitHub Secrets are properly configured
+2. Check that the CI/CD pipeline completed successfully
+3. Verify the deployment is using the latest image
+4. Check backend logs for any OAuth configuration errors
