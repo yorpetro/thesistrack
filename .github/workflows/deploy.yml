@@ -76,9 +76,15 @@ jobs:
     - name: Build and push frontend image  
       run: |
         echo "Building frontend image..."
-        # Build and push frontend image
-        docker build --platform linux/amd64 -t ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:${{ github.sha }} ./frontend
-        docker build --platform linux/amd64 -t ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:latest ./frontend
+        # Build and push frontend image with build arguments
+        docker build --platform linux/amd64 \
+          --build-arg VITE_API_URL="https://thesistrack.dev/api" \
+          --build-arg VITE_GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+          -t ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:${{ github.sha }} ./frontend
+        docker build --platform linux/amd64 \
+          --build-arg VITE_API_URL="https://thesistrack.dev/api" \
+          --build-arg VITE_GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+          -t ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:latest ./frontend
         docker push ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:${{ github.sha }}
         docker push ${{ env.REGISTRY_NAME }}.azurecr.io/thesis-frontend:latest
     
@@ -130,6 +136,8 @@ jobs:
         helm upgrade --install thesistrack ./k8s/thesistrack \
           --set backend.image.tag=${{ github.sha }} \
           --set frontend.image.tag=${{ github.sha }} \
+          --set secrets.googleClientId="${{ secrets.GOOGLE_CLIENT_ID }}" \
+          --set secrets.googleClientSecret="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
           --wait --timeout=600s
         
         echo "Deployment completed successfully!"

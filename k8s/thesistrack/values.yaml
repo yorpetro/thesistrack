@@ -36,8 +36,8 @@ frontend:
 # Secrets Configuration
 secrets:
   secretKey: "change-this-in-production-use-a-secure-random-key"  # Change this!
-  googleClientId: "YOUR_GOOGLE_CLIENT_ID_HERE"  # Replace with actual Google OAuth Client ID
-  googleClientSecret: "YOUR_GOOGLE_CLIENT_SECRET_HERE"  # Replace with actual Google OAuth Client Secret
+  googleClientId: "PLACEHOLDER_GOOGLE_CLIENT_ID"  # Will be replaced by GitHub Secrets
+  googleClientSecret: "PLACEHOLDER_GOOGLE_CLIENT_SECRET"  # Will be replaced by GitHub Secrets
 
 # Email Configuration (Optional)
 email:
