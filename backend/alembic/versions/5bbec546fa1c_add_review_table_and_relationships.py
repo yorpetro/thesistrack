@@ -47,7 +47,11 @@ def upgrade():
         sa.Column('student_id', sa.String(), nullable=False),
         sa.Column('supervisor_id', sa.String(), nullable=True),
         sa.Column('assistant_id', sa.String(), nullable=True),
+        sa.Column('document_path', sa.String(), nullable=True),
+        sa.Column('document_type', sa.String(), nullable=True),
+        sa.Column('document_size', sa.Integer(), nullable=True),
         sa.Column('submission_date', sa.DateTime(), nullable=True),
+        sa.Column('approval_date', sa.DateTime(), nullable=True),
         sa.Column('defense_date', sa.DateTime(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -157,6 +161,23 @@ def upgrade():
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_request_id'), 'request', ['id'], unique=False)
+    
+    # Create assistantrequest table
+    op.create_table('assistantrequest',
+        sa.Column('id', sa.String(), nullable=False),
+        sa.Column('student_id', sa.String(), nullable=False),
+        sa.Column('assistant_id', sa.String(), nullable=False),
+        sa.Column('thesis_id', sa.String(), nullable=False),
+        sa.Column('status', sa.Enum('REQUESTED', 'ACCEPTED', 'DECLINED', name='requeststatus'), nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=True),
+        sa.Column('updated_at', sa.DateTime(), nullable=True),
+        sa.Column('resolved_at', sa.DateTime(), nullable=True),
+        sa.ForeignKeyConstraint(['assistant_id'], ['user.id'], ),
+        sa.ForeignKeyConstraint(['student_id'], ['user.id'], ),
+        sa.ForeignKeyConstraint(['thesis_id'], ['thesis.id'], ),
+        sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_assistantrequest_id'), 'assistantrequest', ['id'], unique=False)
     
     # Create deadline table
     op.create_table('deadline',
