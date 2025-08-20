@@ -42,7 +42,8 @@ const GoogleSignInButton = ({
       if (window.google && buttonRef.current) {
         const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
         // Debug: Remove in production
-        // console.log('Google Client ID in component:', clientId ? 'SET' : 'NOT SET');
+        console.log('Google Client ID in component:', clientId);
+        console.log('Full client ID:', clientId);
         
         if (!clientId || clientId === 'disabled') {
           console.log('Google Sign-In is disabled in this environment.');
