@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import Any
+from datetime import datetime
 
 from app import models, schemas
 from app.core.deps import get_db, get_current_reviewer
@@ -40,16 +41,13 @@ def create_thesis_review(
             detail="You can only review theses that are assigned to you",
         )
 
-    # Generate the title
-    review_title = f"{current_user.full_name} review"
-    
     # Create the Review database object
     db_review = Review(
-        title=review_title,
-        text=review_in.text,
-        preliminary_evaluation=review_in.preliminary_evaluation,
+        comments=review_in.comments,
+        grade=review_in.grade,
         thesis_id=thesis_id,
-        assistant_id=current_user.id
+        assistant_id=current_user.id,
+        assigned_at=datetime.utcnow()
     )
     
     # Add to session, commit, and refresh

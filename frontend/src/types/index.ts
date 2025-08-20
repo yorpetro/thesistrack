@@ -170,15 +170,19 @@ export interface ThesisRequest {
 
 // Review related types
 export interface ReviewCreate {
-  text: string;
-  preliminary_evaluation: number; // Should be between 2 and 6
+  comments: string;
+  grade: number; // Should be between 2.0 and 6.0
 }
 
 export interface ReviewRead {
-  id: number; // Assuming integer ID based on schema, could be string
-  title: string;
-  text: string;
-  preliminary_evaluation: number;
+  id: string;
+  comments: string;
+  grade: number;
   thesis_id: string;
   assistant_id: string;
+  status?: string;
+  assigned_at?: string;
+  completed_at?: string;
+  created_at: string;
+  updated_at: string;
 } 

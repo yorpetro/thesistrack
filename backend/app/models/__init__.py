@@ -5,4 +5,4 @@ from app.models.attachment import ThesisAttachment
 from app.models.committee import ThesisCommitteeMember, CommitteeMemberRole
 from app.models.event import Event
 from app.models.request import AssistantRequest, RequestStatus
-from app.models.review import Review 
+from app.models.review import Review, ReviewStatus 

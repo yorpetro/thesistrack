@@ -95,8 +95,8 @@ const ThesisPage = () => {
 
     try {
       const reviewData: ReviewCreate = {
-        text: reviewText,
-        preliminary_evaluation: reviewGrade as number,
+        comments: reviewText,
+        grade: reviewGrade as number,
       };
 
       await createThesisReview(id, reviewData);

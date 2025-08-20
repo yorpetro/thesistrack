@@ -46,8 +46,8 @@ const ThesisReviewAssistantActions: React.FC<Props> = ({ thesis, user, onReviewS
 
     try {
       const reviewData: ReviewCreate = {
-        text: reviewText,
-        preliminary_evaluation: reviewGrade as number,
+        comments: reviewText,
+        grade: reviewGrade as number,
       };
 
       await createThesisReview(thesis.id, reviewData);
