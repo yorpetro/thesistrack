@@ -62,45 +62,43 @@ def upgrade():
     )
     op.create_index(op.f('ix_thesis_id'), 'thesis', ['id'], unique=False)
     
-    # Create other tables...
-    op.create_table('attachment',
+    # Create thesisattachment table
+    op.create_table('thesisattachment',
         sa.Column('id', sa.String(), nullable=False),
         sa.Column('filename', sa.String(), nullable=False),
-        sa.Column('original_filename', sa.String(), nullable=False),
-        sa.Column('content_type', sa.String(), nullable=False),
-        sa.Column('size', sa.Integer(), nullable=False),
         sa.Column('file_path', sa.String(), nullable=False),
+        sa.Column('file_type', sa.String(), nullable=False),
+        sa.Column('file_size', sa.Integer(), nullable=False),
+        sa.Column('description', sa.String(), nullable=True),
         sa.Column('thesis_id', sa.String(), nullable=False),
         sa.Column('uploaded_by', sa.String(), nullable=False),
-        sa.Column('version', sa.Integer(), nullable=False),
-        sa.Column('is_active', sa.Boolean(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(['thesis_id'], ['thesis.id'], ),
         sa.ForeignKeyConstraint(['uploaded_by'], ['user.id'], ),
         sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_attachment_id'), 'attachment', ['id'], unique=False)
+    op.create_index(op.f('ix_thesisattachment_id'), 'thesisattachment', ['id'], unique=False)
     
-    # Create comment table
-    op.create_table('comment',
+    # Create thesiscomment table
+    op.create_table('thesiscomment',
         sa.Column('id', sa.String(), nullable=False),
         sa.Column('content', sa.Text(), nullable=False),
         sa.Column('thesis_id', sa.String(), nullable=False),
-        sa.Column('author_id', sa.String(), nullable=False),
+        sa.Column('user_id', sa.String(), nullable=False),
         sa.Column('parent_id', sa.String(), nullable=True),
-        sa.Column('is_approval', sa.Boolean(), nullable=True),
+        sa.Column('is_resolved', sa.Boolean(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['author_id'], ['user.id'], ),
-        sa.ForeignKeyConstraint(['parent_id'], ['comment.id'], ),
+        sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+        sa.ForeignKeyConstraint(['parent_id'], ['thesiscomment.id'], ),
         sa.ForeignKeyConstraint(['thesis_id'], ['thesis.id'], ),
         sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_comment_id'), 'comment', ['id'], unique=False)
+    op.create_index(op.f('ix_thesiscomment_id'), 'thesiscomment', ['id'], unique=False)
     
-    # Create review table
-    op.create_table('review',
+    # Create reviews table
+    op.create_table('reviews',
         sa.Column('id', sa.String(), nullable=False),
         sa.Column('thesis_id', sa.String(), nullable=False),
         sa.Column('reviewer_id', sa.String(), nullable=False),
@@ -115,20 +113,23 @@ def upgrade():
         sa.ForeignKeyConstraint(['thesis_id'], ['thesis.id'], ),
         sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_review_id'), 'review', ['id'], unique=False)
+    op.create_index(op.f('ix_review_id'), 'reviews', ['id'], unique=False)
     
-    # Create other tables (committee, event, request, etc.)
-    op.create_table('committee',
+    # Create thesiscommitteemember table
+    op.create_table('thesiscommitteemember',
         sa.Column('id', sa.String(), nullable=False),
         sa.Column('thesis_id', sa.String(), nullable=False),
-        sa.Column('member_id', sa.String(), nullable=False),
-        sa.Column('role', sa.String(), nullable=False),
+        sa.Column('user_id', sa.String(), nullable=False),
+        sa.Column('role', sa.Enum('chair', 'reviewer', 'advisor', 'external', name='committeememberrole'), nullable=False),
+        sa.Column('has_approved', sa.Boolean(), nullable=True),
+        sa.Column('approval_date', sa.DateTime(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['member_id'], ['user.id'], ),
+        sa.Column('updated_at', sa.DateTime(), nullable=True),
+        sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
         sa.ForeignKeyConstraint(['thesis_id'], ['thesis.id'], ),
         sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_committee_id'), 'committee', ['id'], unique=False)
+    op.create_index(op.f('ix_thesiscommitteemember_id'), 'thesiscommitteemember', ['id'], unique=False)
     
     op.create_table('event',
         sa.Column('id', sa.String(), nullable=False),

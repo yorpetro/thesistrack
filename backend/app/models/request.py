@@ -30,6 +30,6 @@ class AssistantRequest(Base):
     resolved_at = Column(DateTime, nullable=True)  # When accepted or declined
     
     # Relationships
-    student = relationship("User", foreign_keys=[student_id])
-    assistant = relationship("User", foreign_keys=[assistant_id])
+    student = relationship("User", foreign_keys=[student_id], overlaps="sent_requests")
+    assistant = relationship("User", foreign_keys=[assistant_id], overlaps="received_requests")
     thesis = relationship("Thesis", back_populates="requests") 
