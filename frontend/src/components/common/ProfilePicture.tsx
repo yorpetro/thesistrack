@@ -16,7 +16,9 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
 }) => {
   const getProfileImageUrl = (profilePicture: string | null): string | null => {
     if (!profilePicture) return null;
-    return `http://localhost:8000/api/v1/users/profile-picture/${profilePicture}`;
+    // Use the current origin for the API base URL in production
+    const baseUrl = import.meta.env.PROD ? window.location.origin : 'http://localhost:8000';
+    return `${baseUrl}/api/v1/users/profile-picture/${profilePicture}`;
   };
 
   const sizeClasses = {

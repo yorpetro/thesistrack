@@ -143,8 +143,9 @@ const ProfileSettings = () => {
 
   const getProfileImageUrl = (profilePicture: string | null) => {
     if (!profilePicture) return null;
-    // Use the profile picture serving endpoint
-    return `http://localhost:8000/api/v1/users/profile-picture/${profilePicture}`;
+    // Use the current origin for the API base URL in production
+    const baseUrl = import.meta.env.PROD ? window.location.origin : 'http://localhost:8000';
+    return `${baseUrl}/api/v1/users/profile-picture/${profilePicture}`;
   };
 
   if (loading) {
