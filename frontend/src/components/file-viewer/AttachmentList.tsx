@@ -78,7 +78,10 @@ const AttachmentList = ({
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const getFileIcon = (contentType: string) => {
+  const getFileIcon = (contentType: string | null | undefined) => {
+    if (!contentType) {
+      return <DocumentIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />;
+    }
     if (contentType.includes('pdf')) {
       return <DocumentTextIcon className="h-5 w-5 text-red-500 dark:text-red-400" />;
     }
