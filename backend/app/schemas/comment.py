@@ -10,7 +10,7 @@ class CommentBase(BaseModel):
     parent_id: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Properties to receive via API on creation
@@ -34,7 +34,7 @@ class CommentInDBBase(CommentBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Properties to return to client

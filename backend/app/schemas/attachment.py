@@ -11,7 +11,7 @@ class AttachmentBase(BaseModel):
     file_size: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Properties to receive via API on creation
@@ -36,7 +36,7 @@ class AttachmentInDBBase(AttachmentBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Properties to return to client

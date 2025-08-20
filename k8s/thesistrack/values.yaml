@@ -36,8 +36,8 @@ frontend:
 # Secrets Configuration
 secrets:
   secretKey: "change-this-in-production-use-a-secure-random-key"  # Change this!
-  googleClientId: "your-google-client-id.apps.googleusercontent.com"  # Add your Google Client ID
-  googleClientSecret: "your-google-client-secret"  # Add your Google Client Secret
+  googleClientId: "disabled"  # Set to "disabled" to skip Google OAuth for now
+  googleClientSecret: "disabled"  # Set to "disabled" to skip Google OAuth for now
 
 # Email Configuration (Optional)
 email:

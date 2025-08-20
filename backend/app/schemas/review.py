@@ -29,7 +29,7 @@ class ReviewInDBBase(ReviewBase):
     assistant_id: str # Changed to str to match model FK
 
     class Config:
-        orm_mode = True # Use orm_mode or from_attributes based on Pydantic version
+        from_attributes = True
 
 
 # Properties to return to client

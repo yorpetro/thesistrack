@@ -4,12 +4,32 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:  # Allow manual triggers
+    inputs:
+      auto_stop_cluster:
+        description: 'Stop cluster after deployment to save costs?'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      deployment_environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - 'production'
+          - 'staging'
+          - 'development'
 
 env:
   REGISTRY_NAME: thesistrackregistry
   CLUSTER_NAME: aks-thesistrack
   CLUSTER_RESOURCE_GROUP: rg-thesistrack
   NAMESPACE: default
+  AUTO_STOP_CLUSTER: ${{ github.event.inputs.auto_stop_cluster || vars.AUTO_STOP_CLUSTER || 'true' }}
+  DEPLOYMENT_ENV: ${{ github.event.inputs.deployment_environment || 'production' }}
 
 jobs:
   build-and-deploy:
@@ -26,6 +46,9 @@ jobs:
     - name: Start AKS cluster (if stopped)
       run: |
         echo "Checking AKS cluster status..."
+        echo "Deployment Environment: ${{ env.DEPLOYMENT_ENV }}"
+        echo "Auto Stop Cluster: ${{ env.AUTO_STOP_CLUSTER }}"
+        
         CLUSTER_STATUS=$(az aks show --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --query "powerState.code" -o tsv)
         echo "Current cluster status: $CLUSTER_STATUS"
         
@@ -124,16 +147,41 @@ jobs:
         # Get external IP
         EXTERNAL_IP=$(kubectl get service frontend -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         if [ -n "$EXTERNAL_IP" ]; then
-          echo "✅ Application deployed successfully!"
-          echo "🌐 Frontend URL: http://$EXTERNAL_IP:5173"
+                  echo "✅ Application deployed successfully!"
+        echo "🌐 Frontend URL: http://$EXTERNAL_IP:5173"
+        echo "🔒 HTTPS URL: https://thesistrack.dev"
+      else
+        echo "⚠️  External IP not yet assigned, check later with: kubectl get service frontend"
+      fi
+    
+    - name: Deployment Summary
+      run: |
+        echo "🎉 Deployment Summary"
+        echo "=================="
+        echo "Environment: ${{ env.DEPLOYMENT_ENV }}"
+        echo "Auto Stop Cluster: ${{ env.AUTO_STOP_CLUSTER }}"
+        echo "Commit: ${{ github.sha }}"
+        echo "Branch: ${{ github.ref_name }}"
+        
+        if [ "${{ env.AUTO_STOP_CLUSTER }}" = "true" ]; then
+          echo "💰 Cost Optimization: Cluster will be stopped to save costs"
+          echo "🚀 To access your app: az aks start --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }}"
         else
-          echo "⚠️  External IP not yet assigned, check later with: kubectl get service frontend"
+          echo "🔄 Cluster will remain running for development/testing"
+          echo "⚠️  Remember to stop manually: az aks stop --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }}"
         fi
     
     - name: Stop AKS cluster (cost optimization)
-      if: always()  # Run even if previous steps fail
+      if: always() && env.AUTO_STOP_CLUSTER == 'true'  # Only stop if AUTO_STOP_CLUSTER is true
       run: |
         echo "Stopping AKS cluster to save costs..."
         az aks stop --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --no-wait
         echo "✅ Cluster stop initiated (runs in background)"
-        echo "💡 To access your app, restart cluster with: az aks start --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }}" 
+        echo "💡 To access your app, restart cluster with: az aks start --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }}"
+    
+    - name: Keep cluster running
+      if: always() && env.AUTO_STOP_CLUSTER == 'false'
+      run: |
+        echo "🔄 Keeping AKS cluster running as requested"
+        echo "💡 Cluster will continue running (may incur costs)"
+        echo "💡 To stop manually: az aks stop --name ${{ env.CLUSTER_NAME }} --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }}" 

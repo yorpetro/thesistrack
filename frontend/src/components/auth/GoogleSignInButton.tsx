@@ -44,9 +44,8 @@ const GoogleSignInButton = ({
         // Debug: Remove in production
         // console.log('Google Client ID in component:', clientId ? 'SET' : 'NOT SET');
         
-        if (!clientId) {
-          console.error('Google Client ID is not set! Check your environment variables.');
-          onError?.(new Error('Google Client ID not configured'));
+        if (!clientId || clientId === 'disabled') {
+          console.log('Google Sign-In is disabled in this environment.');
           return;
         }
         
@@ -93,6 +92,16 @@ const GoogleSignInButton = ({
       }, 10000);
     }
   }, [onSuccess, onError, text, disabled]);
+
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  
+  if (!clientId || clientId === 'disabled') {
+    return (
+      <div className="w-full p-3 border border-gray-300 rounded-lg text-center text-gray-500">
+        Google Sign-In is disabled in this environment
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">

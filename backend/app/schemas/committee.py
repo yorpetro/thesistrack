@@ -11,7 +11,7 @@ class CommitteeMemberBase(BaseModel):
     approval_date: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Simple representation for nested views
@@ -21,7 +21,7 @@ class CommitteeMemberSimple(CommitteeMemberBase):
     user: Optional["UserSimple"] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Properties to receive via API on creation
@@ -46,7 +46,7 @@ class CommitteeMemberInDBBase(CommitteeMemberBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Properties to return to client
@@ -67,7 +67,7 @@ class ThesisSimple(BaseModel):
     status: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 from app.schemas.thesis import UserSimple
