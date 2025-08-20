@@ -8,7 +8,7 @@ from app.models.thesis import ThesisStatus
 class ThesisBase(BaseModel):
     title: str
     abstract: Optional[str] = None
-    status: ThesisStatus = ThesisStatus.DRAFT
+    status: ThesisStatus = ThesisStatus.draft
 
 
 # Properties to receive via API on creation

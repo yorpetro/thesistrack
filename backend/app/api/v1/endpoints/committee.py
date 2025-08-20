@@ -35,7 +35,7 @@ async def read_thesis_committee(
         )
     
     # Check permissions (students can only view committee for their own theses)
-    if (current_user.role == UserRole.STUDENT and 
+    if (current_user.role == UserRole.student and 
         current_user.id != thesis.student_id):
         raise HTTPException(
             status_code=403,
@@ -67,7 +67,7 @@ async def add_committee_member(
         )
     
     # Check permissions (only professors or the supervisor can manage committee)
-    if (current_user.role != UserRole.PROFESSOR and 
+    if (current_user.role != UserRole.professor and 
         current_user.id != thesis.supervisor_id):
         raise HTTPException(
             status_code=403,
@@ -82,7 +82,7 @@ async def add_committee_member(
             detail="User not found",
         )
     
-    if user.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+    if user.role not in [UserRole.professor, UserRole.graduation_assistant]:
         raise HTTPException(
             status_code=400,
             detail="Only professors and graduate assistants can be committee members",
@@ -154,7 +154,7 @@ async def update_committee_member(
     
     # Only the supervisor or the member themselves can update
     if not (is_supervisor or is_committee_member):
-        if current_user.role != UserRole.PROFESSOR:
+        if current_user.role != UserRole.professor:
             raise HTTPException(
                 status_code=403,
                 detail="Not enough permissions to update this committee member",
@@ -216,7 +216,7 @@ async def remove_committee_member(
     
     # Check permissions (only supervisors can remove committee members)
     if current_user.id != thesis.supervisor_id:
-        if current_user.role != UserRole.PROFESSOR:
+        if current_user.role != UserRole.professor:
             raise HTTPException(
                 status_code=403,
                 detail="Only the thesis supervisor can remove committee members",

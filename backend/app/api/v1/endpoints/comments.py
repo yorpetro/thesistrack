@@ -37,7 +37,7 @@ async def read_thesis_comments(
         )
     
     # Check permissions (students can only view comments on their own theses)
-    if (current_user.role == UserRole.STUDENT and 
+    if (current_user.role == UserRole.student and 
         current_user.id != thesis.student_id):
         raise HTTPException(
             status_code=403,
@@ -71,7 +71,7 @@ async def create_thesis_comment(
         )
     
     # Check if thesis status allows comments
-    if thesis.status == ThesisStatus.DRAFT:
+    if thesis.status == ThesisStatus.draft:
         # Only the owner can comment on drafts
         if current_user.id != thesis.student_id:
             raise HTTPException(
@@ -137,7 +137,7 @@ async def update_comment(
     # Check permissions (only the comment author can update it)
     if current_user.id != comment.user_id:
         # Professors and grad assistants can mark comments as resolved
-        if (current_user.role in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT] and
+        if (current_user.role in [UserRole.professor, UserRole.graduation_assistant] and
             comment_in.dict(exclude_unset=True).keys() == {"is_resolved"}):
             pass
         else:
@@ -179,7 +179,7 @@ async def delete_comment(
     # Check permissions (only the comment author can delete it)
     if current_user.id != comment.user_id:
         # Professors can delete any comment
-        if current_user.role != UserRole.PROFESSOR:
+        if current_user.role != UserRole.professor:
             raise HTTPException(
                 status_code=403,
                 detail="Not enough permissions to delete this comment",

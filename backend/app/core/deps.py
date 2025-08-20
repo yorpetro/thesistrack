@@ -56,7 +56,7 @@ CurrentActiveUser = Annotated[User, Depends(get_current_active_user)]
 
 async def get_current_student(current_user: CurrentActiveUser) -> User:
     """Get the current student user."""
-    if current_user.role != UserRole.STUDENT:
+    if current_user.role != UserRole.student:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )
@@ -64,7 +64,7 @@ async def get_current_student(current_user: CurrentActiveUser) -> User:
 
 async def get_current_professor(current_user: CurrentActiveUser) -> User:
     """Get the current professor user."""
-    if current_user.role != UserRole.PROFESSOR:
+    if current_user.role != UserRole.professor:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )
@@ -72,7 +72,7 @@ async def get_current_professor(current_user: CurrentActiveUser) -> User:
 
 async def get_current_graduation_assistant(current_user: CurrentActiveUser) -> User:
     """Get the current graduation assistant user."""
-    if current_user.role != UserRole.GRAD_ASSISTANT:
+    if current_user.role != UserRole.graduation_assistant:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )
@@ -80,7 +80,7 @@ async def get_current_graduation_assistant(current_user: CurrentActiveUser) -> U
 
 async def get_current_reviewer(current_user: CurrentActiveUser) -> User:
     """Get the current reviewer user (professor or graduation assistant)."""
-    if current_user.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+    if current_user.role not in [UserRole.professor, UserRole.graduation_assistant]:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )

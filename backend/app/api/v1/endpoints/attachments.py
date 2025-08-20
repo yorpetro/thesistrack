@@ -49,7 +49,7 @@ async def read_attachments(
         )
     
     # Check permissions - students can only access their own thesis, professors/assistants can access any
-    if (current_user.role == UserRole.STUDENT and 
+    if (current_user.role == UserRole.student and 
         current_user.id != thesis.student_id):
         raise HTTPException(
             status_code=403,
@@ -84,7 +84,7 @@ async def create_attachment(
     
     # Check permissions (only student who owns the thesis or reviewers can add attachments)
     is_owner = current_user.id == thesis.student_id
-    is_reviewer = current_user.role in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]
+    is_reviewer = current_user.role in [UserRole.professor, UserRole.graduation_assistant]
     
     if not (is_owner or is_reviewer):
         raise HTTPException(
@@ -153,7 +153,7 @@ async def read_attachment(
         )
     
     # Check permissions - students can only access their own thesis, professors/assistants can access any
-    if (current_user.role == UserRole.STUDENT and 
+    if (current_user.role == UserRole.student and 
         current_user.id != thesis.student_id):
         raise HTTPException(
             status_code=403,
@@ -195,7 +195,7 @@ async def download_attachment(
         )
     
     # Check permissions - students can only access their own thesis, professors/assistants can access any
-    if (current_user.role == UserRole.STUDENT and 
+    if (current_user.role == UserRole.student and 
         current_user.id != thesis.student_id):
         raise HTTPException(
             status_code=403,
@@ -257,7 +257,7 @@ async def preview_attachment(
         )
     
     # Check permissions - students can only access their own thesis, professors/assistants can access any
-    if (current_user.role == UserRole.STUDENT and 
+    if (current_user.role == UserRole.student and 
         current_user.id != thesis.student_id):
         raise HTTPException(
             status_code=403,
@@ -336,7 +336,7 @@ async def update_attachment(
     # Check permissions (only owner or uploader can update)
     is_owner = current_user.id == thesis.student_id
     is_uploader = current_user.id == attachment.uploaded_by
-    is_reviewer = current_user.role in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]
+    is_reviewer = current_user.role in [UserRole.professor, UserRole.graduation_assistant]
     
     if not (is_owner or is_uploader or is_reviewer):
         raise HTTPException(

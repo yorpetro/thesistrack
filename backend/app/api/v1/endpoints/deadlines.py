@@ -33,7 +33,7 @@ async def read_deadlines(
     query = db.query(Deadline)
     
     # Students can only see active global deadlines
-    if current_user.role == UserRole.STUDENT:
+    if current_user.role == UserRole.student:
         query = query.filter(Deadline.is_active == True, Deadline.is_global == True)
     elif active_only:
         query = query.filter(Deadline.is_active == True)
@@ -76,7 +76,7 @@ async def create_deadline(
     - Review deadline: 2 days before defense
     """
     # Check permissions
-    if current_user.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+    if current_user.role not in [UserRole.professor, UserRole.graduation_assistant]:
         raise HTTPException(
             status_code=403,
             detail="Only professors and graduation assistants can create deadlines",
@@ -117,7 +117,7 @@ async def create_deadline(
             description=deadline_in.description,
             location=deadline_in.location,  # Location is only relevant for defense deadlines
             deadline_date=defense_date,
-            deadline_type=DeadlineType.DEFENSE,
+            deadline_type=DeadlineType.defense,
             is_active=deadline_in.is_active,
             is_global=deadline_in.is_global,
         )
@@ -128,7 +128,7 @@ async def create_deadline(
             title=f"Thesis Submission - {deadline_in.title}",
             description=f"Student thesis submission deadline (1 week before defense: {deadline_in.title})",
             deadline_date=submission_date,
-            deadline_type=DeadlineType.SUBMISSION,
+            deadline_type=DeadlineType.submission,
             is_active=deadline_in.is_active,
             is_global=deadline_in.is_global,
         )
@@ -139,7 +139,7 @@ async def create_deadline(
             title=f"Review Completion - {deadline_in.title}",
             description=f"Assistant review completion deadline (2 days before defense: {deadline_in.title})",
             deadline_date=review_date,
-            deadline_type=DeadlineType.REVIEW,
+            deadline_type=DeadlineType.review,
             is_active=deadline_in.is_active,
             is_global=deadline_in.is_global,
         )
@@ -182,7 +182,7 @@ async def read_deadline(
         )
     
     # Students can only see active global deadlines
-    if (current_user.role == UserRole.STUDENT and 
+    if (current_user.role == UserRole.student and 
         (not deadline.is_active or not deadline.is_global)):
         raise HTTPException(
             status_code=403,
@@ -213,7 +213,7 @@ async def update_deadline(
     Update a deadline. Only professors can update deadlines.
     """
     # Check permissions
-    if current_user.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+    if current_user.role not in [UserRole.professor, UserRole.graduation_assistant]:
         raise HTTPException(
             status_code=403,
             detail="Only professors and graduation assistants can update deadlines",
@@ -257,7 +257,7 @@ async def delete_deadline(
     Delete a deadline. Only professors can delete deadlines.
     """
     # Check permissions
-    if current_user.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+    if current_user.role not in [UserRole.professor, UserRole.graduation_assistant]:
         raise HTTPException(
             status_code=403,
             detail="Only professors and graduation assistants can delete deadlines",
@@ -295,13 +295,13 @@ async def get_upcoming_deadlines(
     )
     
     # Role-based filtering
-    if current_user.role == UserRole.STUDENT:
+    if current_user.role == UserRole.student:
         # Students see submission and defense deadlines (global only)
         query = query.filter(
             Deadline.is_global == True,
             Deadline.deadline_type.in_(['submission', 'defense'])
         )
-    elif current_user.role in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+    elif current_user.role in [UserRole.professor, UserRole.graduation_assistant]:
         # Professors and assistants see all active global deadlines
         query = query.filter(Deadline.is_global == True)
     

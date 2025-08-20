@@ -22,7 +22,7 @@ async def create_request(
     Create new assistant request.
     """
     # Verify the user is a student and the thesis belongs to them
-    if current_user.role != models.UserRole.STUDENT:
+    if current_user.role != models.UserRole.student:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only students can create assistant requests",
@@ -40,7 +40,7 @@ async def create_request(
         )
     
     # Check if the thesis is in DRAFT status
-    if thesis.status != ThesisStatus.DRAFT:
+    if thesis.status != ThesisStatus.draft:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Can only request assistance for theses in DRAFT status",
@@ -49,7 +49,7 @@ async def create_request(
     # Check if the assistant exists and is a grad assistant or professor
     assistant = db.query(models.User).filter(
         models.User.id == request_in.assistant_id,
-        models.User.role.in_([models.UserRole.GRAD_ASSISTANT, models.UserRole.PROFESSOR])
+        models.User.role.in_([models.UserRole.graduation_assistant, models.UserRole.professor])
     ).first()
     
     if not assistant:
@@ -62,7 +62,7 @@ async def create_request(
     existing_declined = db.query(models.AssistantRequest).filter(
         models.AssistantRequest.thesis_id == request_in.thesis_id,
         models.AssistantRequest.assistant_id == request_in.assistant_id,
-        models.AssistantRequest.status == RequestStatus.DECLINED
+        models.AssistantRequest.status == RequestStatus.declined
     ).first()
     
     if existing_declined:
@@ -74,7 +74,7 @@ async def create_request(
     # Check if there's already a pending request for this thesis to any assistant
     existing_request = db.query(models.AssistantRequest).filter(
         models.AssistantRequest.thesis_id == request_in.thesis_id,
-        models.AssistantRequest.status == RequestStatus.REQUESTED
+        models.AssistantRequest.status == RequestStatus.requested
     ).first()
     
     if existing_request:
@@ -88,7 +88,7 @@ async def create_request(
         student_id=current_user.id,
         assistant_id=request_in.assistant_id,
         thesis_id=request_in.thesis_id,
-        status=RequestStatus.REQUESTED
+        status=RequestStatus.requested
     )
     
     db.add(db_request)
@@ -109,7 +109,7 @@ async def update_request(
     Update a request status (accept or decline)
     """
     # Verify the user is a graduation assistant or professor
-    if current_user.role not in [models.UserRole.GRAD_ASSISTANT, models.UserRole.PROFESSOR]:
+    if current_user.role not in [models.UserRole.graduation_assistant, models.UserRole.professor]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only graduation assistants and professors can update request status",
@@ -119,7 +119,7 @@ async def update_request(
     db_request = db.query(models.AssistantRequest).filter(
         models.AssistantRequest.id == request_id,
         models.AssistantRequest.assistant_id == current_user.id,
-        models.AssistantRequest.status == RequestStatus.REQUESTED
+        models.AssistantRequest.status == RequestStatus.requested
     ).first()
     
     if not db_request:
@@ -133,13 +133,13 @@ async def update_request(
     db_request.resolved_at = datetime.utcnow()
     
     # If accepted, update thesis status to UNDER_REVIEW
-    if request_update.status == RequestStatus.ACCEPTED:
+    if request_update.status == RequestStatus.accepted:
         thesis = db.query(models.Thesis).filter(
             models.Thesis.id == db_request.thesis_id
         ).first()
         
         if thesis:
-            thesis.status = ThesisStatus.UNDER_REVIEW
+            thesis.status = ThesisStatus.under_review
     
     db.commit()
     db.refresh(db_request)
@@ -161,9 +161,9 @@ async def list_requests(
     query = db.query(models.AssistantRequest)
     
     # Filter based on user role
-    if current_user.role == models.UserRole.STUDENT:
+    if current_user.role == models.UserRole.student:
         query = query.filter(models.AssistantRequest.student_id == current_user.id)
-    elif current_user.role in [models.UserRole.GRAD_ASSISTANT, models.UserRole.PROFESSOR]:
+    elif current_user.role in [models.UserRole.graduation_assistant, models.UserRole.professor]:
         query = query.filter(models.AssistantRequest.assistant_id == current_user.id)
     else:
         raise HTTPException(
@@ -220,7 +220,7 @@ async def get_request(
     # Check if user has access to this request
     if (current_user.id != request.student_id and 
         current_user.id != request.assistant_id and
-        current_user.role not in [models.UserRole.PROFESSOR]):
+        current_user.role not in [models.UserRole.professor]):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to access this request",
@@ -249,7 +249,7 @@ async def cancel_request(
     Cancel a pending assistant request (student only)
     """
     # Verify the user is a student
-    if current_user.role != models.UserRole.STUDENT:
+    if current_user.role != models.UserRole.student:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only students can cancel assistant requests",
@@ -259,7 +259,7 @@ async def cancel_request(
     db_request = db.query(models.AssistantRequest).filter(
         models.AssistantRequest.id == request_id,
         models.AssistantRequest.student_id == current_user.id,
-        models.AssistantRequest.status == RequestStatus.REQUESTED
+        models.AssistantRequest.status == RequestStatus.requested
     ).first()
     
     if not db_request:

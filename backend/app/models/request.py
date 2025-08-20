@@ -22,7 +22,7 @@ class AssistantRequest(Base):
     thesis_id = Column(String, ForeignKey("thesis.id"), nullable=False)
     
     # Status
-    status = Column(Enum(RequestStatus), default=RequestStatus.REQUESTED, nullable=False)
+    status = Column(Enum(RequestStatus), default=RequestStatus.requested, nullable=False)
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)

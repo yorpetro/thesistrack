@@ -65,7 +65,7 @@ async def create_event(
             )
         
         # Check permissions (students can only create events for their own theses)
-        if (current_user.role == UserRole.STUDENT and 
+        if (current_user.role == UserRole.student and 
             current_user.id != thesis.student_id):
             raise HTTPException(
                 status_code=403,
@@ -120,7 +120,7 @@ async def read_event(
     # Check permissions (users can only view their own events)
     if event.user_id != current_user.id:
         # Professors can view any thesis-related events
-        if current_user.role != UserRole.PROFESSOR:
+        if current_user.role != UserRole.professor:
             raise HTTPException(
                 status_code=403,
                 detail="Not enough permissions to access this event",
@@ -148,7 +148,7 @@ async def update_event(
     # Check permissions (only event owner can update)
     if event.user_id != current_user.id:
         # Professors can update thesis-related events
-        if current_user.role != UserRole.PROFESSOR or not event.thesis_id:
+        if current_user.role != UserRole.professor or not event.thesis_id:
             raise HTTPException(
                 status_code=403,
                 detail="Not enough permissions to update this event",
@@ -196,7 +196,7 @@ async def delete_event(
     # Check permissions (only event owner can delete)
     if event.user_id != current_user.id:
         # Professors can delete any thesis-related events
-        if current_user.role != UserRole.PROFESSOR or not event.thesis_id:
+        if current_user.role != UserRole.professor or not event.thesis_id:
             raise HTTPException(
                 status_code=403,
                 detail="Not enough permissions to delete this event",

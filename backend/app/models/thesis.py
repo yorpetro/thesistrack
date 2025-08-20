@@ -22,7 +22,7 @@ class Thesis(Base):
     id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     title = Column(String, nullable=False, index=True)
     abstract = Column(Text, nullable=True)
-    status = Column(Enum(ThesisStatus), default=ThesisStatus.DRAFT, nullable=False)
+    status = Column(Enum(ThesisStatus), default=ThesisStatus.draft, nullable=False)
     
     # Document paths/metadata
     document_path = Column(String, nullable=True)  # Main document path

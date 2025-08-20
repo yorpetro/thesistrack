@@ -155,7 +155,7 @@ async def google_auth(
                 id=user_id,
                 email=email,
                 full_name=full_name,
-                role=UserRole.STUDENT,  # Default new Google users to student
+                role=UserRole.student,  # Default new Google users to student
                 oauth_provider="google",
                 oauth_id=google_id,
                 is_verified=True,

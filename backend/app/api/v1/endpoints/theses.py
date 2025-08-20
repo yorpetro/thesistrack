@@ -29,7 +29,7 @@ async def read_all_theses_for_professors(
     Only accessible by professors and graduation assistants.
     """
     # Only professors and graduation assistants can access this endpoint
-    if current_user.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+    if current_user.role not in [UserRole.professor, UserRole.graduation_assistant]:
         raise HTTPException(
             status_code=403,
             detail="Only professors and graduation assistants can view all theses",
@@ -54,12 +54,12 @@ async def read_theses(
     # Filter theses based on user role
     query = db.query(Thesis) # Start building the query
 
-    if current_user.role == UserRole.STUDENT:
+    if current_user.role == UserRole.student:
         # Students can only see their own theses
         theses = query.filter(
             Thesis.student_id == current_user.id
         ).offset(skip).limit(limit).all()
-    elif current_user.role == UserRole.PROFESSOR:
+    elif current_user.role == UserRole.professor:
         # Professors can see theses they supervise
         theses = query.filter(
             Thesis.supervisor_id == current_user.id
@@ -82,7 +82,7 @@ async def create_thesis(
     Create new thesis.
     """
     # Verify user is a student
-    if current_user.role != UserRole.STUDENT:
+    if current_user.role != UserRole.student:
         raise HTTPException(
             status_code=403,
             detail="Only students can create theses",
@@ -97,7 +97,7 @@ async def create_thesis(
                 status_code=404,
                 detail="Supervisor not found",
             )
-        if supervisor.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+        if supervisor.role not in [UserRole.professor, UserRole.graduation_assistant]:
             raise HTTPException(
                 status_code=400,
                 detail="Supervisor must be a professor or graduate assistant",
@@ -145,7 +145,7 @@ async def read_thesis(
         )
     
     # Check permissions
-    if (current_user.role == UserRole.STUDENT and 
+    if (current_user.role == UserRole.student and 
         current_user.id != thesis.student_id):
         raise HTTPException(
             status_code=403,
@@ -174,7 +174,7 @@ async def update_thesis(
     # Check permissions (only student who owns the thesis or supervisor can update)
     is_owner = current_user.id == thesis.student_id
     is_supervisor = current_user.id == thesis.supervisor_id
-    is_reviewer = current_user.role in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]
+    is_reviewer = current_user.role in [UserRole.professor, UserRole.graduation_assistant]
     
     if not (is_owner or is_supervisor or is_reviewer):
         raise HTTPException(
@@ -184,7 +184,7 @@ async def update_thesis(
     
     # Students can only update if the thesis is in draft or needs revision
     if (is_owner and not is_supervisor and 
-        thesis.status not in [ThesisStatus.DRAFT, ThesisStatus.NEEDS_REVISION]):
+        thesis.status not in [ThesisStatus.draft, ThesisStatus.needs_revision]):
         raise HTTPException(
             status_code=403,
             detail="Cannot modify thesis that is not in draft or needs revision status",
@@ -204,7 +204,7 @@ async def update_thesis(
                     status_code=404,
                     detail="Supervisor not found",
                 )
-            if supervisor.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+            if supervisor.role not in [UserRole.professor, UserRole.graduation_assistant]:
                 raise HTTPException(
                     status_code=400,
                     detail="Supervisor must be a professor or graduate assistant",
@@ -220,7 +220,7 @@ async def update_thesis(
     if thesis_in.status:
         # Students can only change status from draft to submitted
         if is_owner and not is_reviewer:
-            if thesis.status == ThesisStatus.DRAFT and thesis_in.status == ThesisStatus.SUBMITTED:
+            if thesis.status == ThesisStatus.draft and thesis_in.status == ThesisStatus.submitted:
                 thesis.submission_date = datetime.utcnow()
             elif thesis_in.status != thesis.status:
                 raise HTTPException(
@@ -229,7 +229,7 @@ async def update_thesis(
                 )
                 
         # Update approval date if status is changed to approved
-        if thesis_in.status == ThesisStatus.APPROVED and thesis.status != ThesisStatus.APPROVED:
+        if thesis_in.status == ThesisStatus.approved and thesis.status != ThesisStatus.approved:
             thesis.approval_date = datetime.utcnow()
     
     # Update thesis attributes
@@ -268,7 +268,7 @@ async def delete_thesis(
             detail="Not enough permissions to delete this thesis",
         )
     
-    if thesis.status != ThesisStatus.DRAFT:
+    if thesis.status != ThesisStatus.draft:
         raise HTTPException(
             status_code=403,
             detail="Cannot delete thesis that is not in draft status",

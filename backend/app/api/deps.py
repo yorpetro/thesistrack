@@ -62,7 +62,7 @@ def get_current_student(
     """
     Get the current student user.
     """
-    if current_user.role != UserRole.STUDENT:
+    if current_user.role != UserRole.student:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )
@@ -75,7 +75,7 @@ def get_current_professor(
     """
     Get the current professor user.
     """
-    if current_user.role != UserRole.PROFESSOR:
+    if current_user.role != UserRole.professor:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )
@@ -88,7 +88,7 @@ def get_current_graduation_assistant(
     """
     Get the current graduation assistant user.
     """
-    if current_user.role != UserRole.GRAD_ASSISTANT:
+    if current_user.role != UserRole.graduation_assistant:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )
@@ -101,7 +101,7 @@ def get_current_reviewer(
     """
     Get the current reviewer user (professor or graduation assistant).
     """
-    if current_user.role not in [UserRole.PROFESSOR, UserRole.GRAD_ASSISTANT]:
+    if current_user.role not in [UserRole.professor, UserRole.graduation_assistant]:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )

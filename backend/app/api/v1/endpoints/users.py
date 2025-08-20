@@ -156,7 +156,7 @@ async def read_user(
         )
     
     # Add student count for graduation assistants
-    if user.role == UserRole.GRAD_ASSISTANT:
+    if user.role == UserRole.graduation_assistant:
         student_count = db.query(func.count(Thesis.id)).filter(
             Thesis.supervisor_id == user.id
         ).scalar()
@@ -182,7 +182,7 @@ async def read_users(
     
     # Add student count for graduation assistants
     for user in users:
-        if user.role == UserRole.GRAD_ASSISTANT:
+        if user.role == UserRole.graduation_assistant:
             student_count = db.query(func.count(Thesis.id)).filter(
                 Thesis.supervisor_id == user.id
             ).scalar()
