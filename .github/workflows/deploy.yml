@@ -147,12 +147,12 @@ jobs:
         # Get external IP
         EXTERNAL_IP=$(kubectl get service frontend -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         if [ -n "$EXTERNAL_IP" ]; then
-                  echo "✅ Application deployed successfully!"
-        echo "🌐 Frontend URL: http://$EXTERNAL_IP:5173"
-        echo "🔒 HTTPS URL: https://thesistrack.dev"
-      else
-        echo "⚠️  External IP not yet assigned, check later with: kubectl get service frontend"
-      fi
+          echo "✅ Application deployed successfully!"
+          echo "🌐 Frontend URL: http://$EXTERNAL_IP:5173"
+          echo "🔒 HTTPS URL: https://thesistrack.dev"
+        else
+          echo "⚠️  External IP not yet assigned, check later with: kubectl get service frontend"
+        fi
     
     - name: Deployment Summary
       run: |
