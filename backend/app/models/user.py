@@ -7,9 +7,9 @@ from app.db.base_class import Base
 
 
 class UserRole(str, enum.Enum):
-    STUDENT = "student"
-    PROFESSOR = "professor"
-    GRAD_ASSISTANT = "graduation_assistant"
+    student = "student"
+    professor = "professor"
+    graduation_assistant = "graduation_assistant"
 
 
 class User(Base):
@@ -33,9 +33,9 @@ class User(Base):
     
     # Relationships
     theses = relationship("Thesis", back_populates="student", 
-                          primaryjoin="and_(User.id==Thesis.student_id, User.role=='student')")
+                          primaryjoin="and_(User.id==Thesis.student_id, User.role==UserRole.student)")
     supervised_theses = relationship("Thesis", back_populates="supervisor",
-                                    primaryjoin="and_(User.id==Thesis.supervisor_id, User.role=='professor')")
+                                    primaryjoin="and_(User.id==Thesis.supervisor_id, User.role==UserRole.professor)")
     comments = relationship("ThesisComment", back_populates="user")
     events = relationship("Event", back_populates="user")
     
@@ -47,4 +47,4 @@ class User(Base):
 
     # Reviews relationship (for assistants)
     reviews = relationship("Review", back_populates="assistant", 
-                           primaryjoin="and_(User.id==Review.assistant_id, User.role=='graduation_assistant')") 
+                           primaryjoin="and_(User.id==Review.assistant_id, User.role==UserRole.graduation_assistant)") 
