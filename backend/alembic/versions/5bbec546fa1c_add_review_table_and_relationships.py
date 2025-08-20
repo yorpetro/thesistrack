@@ -27,9 +27,12 @@ def upgrade():
         sa.Column('role', sa.Enum('STUDENT', 'PROFESSOR', 'GRADUATION_ASSISTANT', name='userrole'), nullable=False),
         sa.Column('is_active', sa.Boolean(), nullable=True),
         sa.Column('is_verified', sa.Boolean(), nullable=True),
-        sa.Column('google_id', sa.String(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
+        sa.Column('bio', sa.Text(), nullable=True),
+        sa.Column('profile_picture', sa.String(), nullable=True),
+        sa.Column('oauth_provider', sa.String(), nullable=True),
+        sa.Column('oauth_id', sa.String(), nullable=True),
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
